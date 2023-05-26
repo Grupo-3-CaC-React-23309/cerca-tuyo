@@ -2,7 +2,7 @@ import PetCard from "./PetCard";
 
 import { useState, useEffect } from "react";
 
-//import {Link} from "react-router-dom"
+import { Link } from 'react-router-dom';
 //import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
 
 import {
@@ -34,10 +34,10 @@ export const PetGrid = () => {
 
   const handleOnCardClick = async (id, estadoActual) => {
     const pet = doc(db, "pets", id);
-    
-      await updateDoc(pet, {estado:!estadoActual});
-      getPets();
-   };
+
+    await updateDoc(pet, { estado: !estadoActual });
+    getPets();
+  };
 
   useEffect(() => {
     getPets();
@@ -45,9 +45,9 @@ export const PetGrid = () => {
 
   return (
     <>
-      <div className="row align-items-start">
+      <div className="d-flex flex-wrap justify-content-center">
         {pets.map((pet) => (
-          <div className="col" key={pet.id}>
+          <div key={pet.id} style={{ width: 'fit-content', margin: '0.5em' }}>
             <PetCard
               imagenURL={pet.imagenURL}
               nombre={pet.nombre}
@@ -55,14 +55,13 @@ export const PetGrid = () => {
               tamaño={pet.tamaño}
               texto={pet.texto}
               textoEstado={pet.estado ? "Adoptado" : "Te espera"}
-              textoBoton={
-                pet.estado ? "Abandonar" : "Adoptar"
-              }
-              onCardClick={() => handleOnCardClick(pet.id,pet.estado)}
+              textoBoton={pet.estado ? "Abandonar" : "Adoptar"}
+              onCardClick={() => handleOnCardClick(pet.id, pet.estado)}
             />
           </div>
         ))}
       </div>
+
     </>
   );
 };
