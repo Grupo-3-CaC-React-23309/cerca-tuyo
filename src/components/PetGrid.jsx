@@ -1,8 +1,9 @@
 import PetCard from "./PetCard";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 
-import { Link } from 'react-router-dom';
+import AuthContext from '../authentication/AuthContext';
+
 //import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
 
 import {
@@ -22,6 +23,7 @@ import { db } from "../firebaseconfig/frebaseConfig";
 //const mySwal = whitReactContent (Swal)
 
 export const PetGrid = () => {
+  const { isLoggedIn } = useContext(AuthContext);
   //1 configurar useState (hook)
   const [pets, setPets] = useState([]);
   //2 referenciamos a la db de firestore
@@ -48,7 +50,7 @@ export const PetGrid = () => {
       <div className="d-flex flex-wrap justify-content-center">
         {pets.map((pet) => (
           <div key={pet.id} style={{ width: 'fit-content', margin: '0.5em' }}>
-            <PetCard
+            <PetCard isLoggedIn={isLoggedIn}
               imagenURL={pet.imagenURL}
               nombre={pet.nombre}
               tipo={pet.tipo}

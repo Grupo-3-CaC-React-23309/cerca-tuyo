@@ -1,7 +1,9 @@
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
+import Tooltip from 'react-bootstrap/Tooltip';
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 
-function PetCard({
+export const PetCard = ({
   nombre,
   tipo,
   tamaño,
@@ -10,7 +12,8 @@ function PetCard({
   imagenURL,
   textoBoton,
   onCardClick,
-}) {
+  isLoggedIn,
+}) => {
   return (
     <Card style={{ width: "18rem" }}>
       <Card.Img variant="top" src={imagenURL} width="100" height="180" />
@@ -20,9 +23,23 @@ function PetCard({
         <Card.Subtitle>{tamaño}</Card.Subtitle>
         <Card.Text>{texto}</Card.Text>
         <Card.Text>{textoEstado}</Card.Text>
-        <Button variant="primary" onClick={onCardClick}>
-          {textoBoton}
-        </Button>
+        <OverlayTrigger
+          overlay={
+            <Tooltip id="tooltip-disabled">
+              Por favor inicia sesión
+            </Tooltip>
+          }
+        >
+          <span className="d-inline-block">
+            <Button
+              variant="primary"
+              onClick={onCardClick}
+              disabled={!isLoggedIn}
+              style={{ pointerEvents: !isLoggedIn ? 'none' : 'auto' }}>
+              {textoBoton}
+            </Button>
+          </span>
+        </OverlayTrigger>
       </Card.Body>
     </Card>
   );
