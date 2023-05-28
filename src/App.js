@@ -5,14 +5,11 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 import AuthContext from './authentication/AuthContext';
 
+import { Crear } from "./components/Crear";
 import { PetGrid } from "./components/PetGrid";
 import { NavBar } from "./components/NavBar";
 import { Login } from "./components/Login";
-
-//import { Create } from "./components/Create";
-//import { Edit } from "./components/Edit";
-
-
+import { Register } from "./components/Register";
 
 
 function App() {
@@ -36,7 +33,9 @@ function App() {
         </AuthContext.Provider> {/* La barra de navegación se renderiza independientemente de la ruta */}
         <Routes>
           <Route path="/" element={<PetGrid />} />
+          <Route path="/crear" element={<Crear />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/registro" element={<Register />} />
           {/* Aquí puedes añadir más rutas */}
           {/*<Route path="/create" element={<Create/>} />
           <Route path="/edit/:id" element={<Edit/>} />
