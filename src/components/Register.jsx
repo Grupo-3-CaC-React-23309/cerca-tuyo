@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import AuthContext from '../authentication/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { auth, createUserWithEmailAndPassword } from '../firebase/firebase';
+import { auth, createUserWithEmailAndPassword } from '../firebaseConfig/firebaseConfig';
 
 export const Register = () => {
     const [username, setUsername] = useState("");

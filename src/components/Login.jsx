@@ -1,7 +1,9 @@
 import React, { useContext, useState } from 'react';
 import AuthContext from '../authentication/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { auth, signInWithEmailAndPassword, sendPasswordResetEmail } from '../firebase/firebase';
+import { auth, signInWithEmailAndPassword, sendPasswordResetEmail } from '../firebaseConfig/firebaseConfig'
+
+// '../firebaseConfig/firebaseConfig';
 
 export const Login = () => {
     const [username, setUsername] = useState("");

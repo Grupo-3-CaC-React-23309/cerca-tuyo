@@ -4,19 +4,10 @@ import { useState, useEffect, useContext } from "react";
 
 import AuthContext from '../authentication/AuthContext';
 
-//import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
+import { collection, getDocs, updateDoc, doc } from "firebase/firestore";
 
-import {
-  collection,
-  getDocs,
-  updateDoc,
-  doc,
-} from "firebase/firestore";
+import { db } from '../firebaseConfig/firebaseConfig' //   "../firebaseConfig/firebaseConfig"
 
-import { db } from "../firebaseconfig/frebaseConfig";
-
-
-//"../firebaseConfig/firebase.js";
 
 //import Swal from "sweetalert2"
 //import whitReactContent from "sweetalert2-react-content"
