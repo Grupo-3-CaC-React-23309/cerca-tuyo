@@ -41,7 +41,8 @@ export const PetGrid = () => {
       <div className="d-flex flex-wrap justify-content-center">
         {pets.map((pet) => (
           <div key={pet.id} style={{ width: 'fit-content', margin: '0.5em' }}>
-            <PetCard isLoggedIn={isLoggedIn}
+            <PetCard 
+              isLoggedIn={isLoggedIn}
               imagenURL={pet.imagenURL}
               nombre={pet.nombre}
               tipo={pet.tipo}

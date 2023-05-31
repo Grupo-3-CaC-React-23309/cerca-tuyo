@@ -9,6 +9,7 @@ import { Crear } from "./components/Crear";
 import { PetGrid } from "./components/PetGrid";
 import { NavBar } from "./components/NavBar";
 import { Login } from "./components/Login";
+import { Logout } from "./components/Logout";
 import { Register } from "./components/Register";
 
 
@@ -30,17 +31,20 @@ function App() {
         <AuthContext.Provider value={{ isLoggedIn, onLogin: handleLogin, onLogout: handleLogout }}>
           <NavBar />
           {/* El resto de tus componentes van aquí */}
-        </AuthContext.Provider> {/* La barra de navegación se renderiza independientemente de la ruta */}
+       
         <Routes>
           <Route path="/" element={<PetGrid />} />
           <Route path="/crear" element={<Crear />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/logout" element={<Logout />} />
           <Route path="/registro" element={<Register />} />
+
           {/* Aquí puedes añadir más rutas */}
           {/*<Route path="/create" element={<Create/>} />
           <Route path="/edit/:id" element={<Edit/>} />
           */}
-        </Routes>
+        </Routes> 
+        </AuthContext.Provider> {/* La barra de navegación se renderiza independientemente de la ruta */}
       </BrowserRouter>
     </div>
   );

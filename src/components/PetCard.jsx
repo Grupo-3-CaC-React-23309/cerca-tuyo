@@ -26,7 +26,7 @@ export const PetCard = ({
         <OverlayTrigger
           overlay={
             <Tooltip id="tooltip-disabled">
-              Por favor inicia sesión
+              {!isLoggedIn ? 'Por favor inicia sesión':''}
             </Tooltip>
           }
         >
