@@ -1,6 +1,6 @@
 import PetCard from "./PetCard";
 
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useCallback } from "react";
 
 import AuthContext from '../authentication/AuthContext';
 
@@ -20,10 +20,10 @@ export const PetGrid = () => {
   //2 referenciamos a la db de firestore
   const petsCollection = collection(db, "pets");
   //3 funcion para mostrar todos los docs
-  const getPets = async () => {
+  const getPets = useCallback(async () => {
     const data = await getDocs(petsCollection);
     setPets(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-  };
+  }, [petsCollection]);
 
   const handleOnCardClick = async (id, estadoActual) => {
     const pet = doc(db, "pets", id);
@@ -34,8 +34,8 @@ export const PetGrid = () => {
 
   useEffect(() => {
     getPets();
-  }, []);
-
+  }, [getPets]);
+  
   return (
     <>
       <div className="d-flex flex-wrap justify-content-center">

@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { NavLink, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import AuthContext from '../authentication/AuthContext'; // Asegúrate de usar tu ruta correcta para importar
 
 export const NavBar = () => {
@@ -19,7 +19,7 @@ export const NavBar = () => {
                         </li>
                         {isLoggedIn && (
                             <li className="nav-item">
-                                <Link className="nav-link" to="/dar-en-adopcion">Dar en Adopción</Link>
+                                <Link className="nav-link" to="/crear">Dar en Adopción</Link>
                             </li>
                         )}
                         <li className="nav-item">
