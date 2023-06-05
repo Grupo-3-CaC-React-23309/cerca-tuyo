@@ -35,18 +35,21 @@ export const PetGrid = () => {
   useEffect(() => {
     getPets();
   }, [getPets]);
-  
+
   return (
     <>
       <div className="d-flex flex-wrap justify-content-center">
         {pets.map((pet) => (
           <div key={pet.id} style={{ width: 'fit-content', margin: '0.5em' }}>
-            <PetCard 
+            <PetCard
               isLoggedIn={isLoggedIn}
               imagenURL={pet.imagenURL}
               nombre={pet.nombre}
               tipo={pet.tipo}
               tamaño={pet.tamaño}
+              sexo={pet.sexo}
+              peso={pet.peso}
+              edad={pet.edad}
               texto={pet.texto}
               textoEstado={pet.estado ? "Adoptado" : "Te espera"}
               textoBoton={pet.estado ? "Abandonar" : "Adoptar"}
