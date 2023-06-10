@@ -11,6 +11,7 @@ import { NavBar } from "./components/NavBar";
 import { Login } from "./components/Login";
 import { Logout } from "./components/Logout";
 import { Register } from "./components/Register";
+import {Footer} from "./components/Footer";
 
 
 function App() {
@@ -30,6 +31,7 @@ function App() {
       <BrowserRouter>
         <AuthContext.Provider value={{ isLoggedIn, onLogin: handleLogin, onLogout: handleLogout }}>
           <NavBar />
+          <Footer/>
           {/* El resto de tus componentes van aquí */}
        
         <Routes>
