@@ -3,10 +3,13 @@ import PetCard from "./PetCard";
 import { useState, useEffect, useContext, useCallback } from "react";
 
 import AuthContext from '../authentication/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
-import { collection, getDocs, updateDoc, doc } from "firebase/firestore";
+import { collection, getDocs, getDoc, updateDoc, doc } from "firebase/firestore";
 
 import { db } from '../firebaseConfig/firebaseConfig' //   "../firebaseConfig/firebaseConfig"
+
+//import { ThemeConsumer } from "react-bootstrap/esm/ThemeProvider";
 
 
 //import Swal from "sweetalert2"
@@ -14,7 +17,10 @@ import { db } from '../firebaseConfig/firebaseConfig' //   "../firebaseConfig/fi
 //const mySwal = whitReactContent (Swal)
 
 export const PetGrid = () => {
-  const { isLoggedIn } = useContext(AuthContext);
+  
+  const { isLoggedIn, userEmail } = useContext(AuthContext);
+  const navigate = useNavigate();
+
   //1 configurar useState (hook)
   const [pets, setPets] = useState([]);
   //2 referenciamos a la db de firestore
@@ -27,9 +33,14 @@ export const PetGrid = () => {
 
   const handleOnCardClick = async (id, estadoActual) => {
     const pet = doc(db, "pets", id);
-
-    await updateDoc(pet, { estado: !estadoActual });
-    getPets();
+    const petData = await getDoc(doc(db, "pets", id));
+   
+    if (userEmail === petData.data().usuario) {
+      navigate(`/editar/${pet.id}`);
+    } else {
+      await updateDoc(pet, { estado: !estadoActual });
+      getPets();  
+    }       
   };
 
   useEffect(() => {
@@ -52,7 +63,8 @@ export const PetGrid = () => {
               edad={pet.edad}
               texto={pet.texto}
               textoEstado={pet.estado ? "Adoptado" : "Te espera"}
-              textoBoton={pet.estado ? "Abandonar" : "Adoptar"}
+              textoBoton={(userEmail === pet.usuario) ? "Editar" : "Adoptar"}
+              
               onCardClick={() => handleOnCardClick(pet.id, pet.estado)}
             />
           </div>

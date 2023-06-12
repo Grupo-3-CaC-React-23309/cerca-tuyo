@@ -3,9 +3,8 @@ import { Link } from 'react-router-dom';
 import AuthContext from '../authentication/AuthContext'; // Asegúrate de usar tu ruta correcta para importar
 
 export const NavBar = () => {
-    const { isLoggedIn } = useContext(AuthContext); // Usar el contexto para obtener el estado de autenticación
-
-    return (
+    const { isLoggedIn, userEmail } = useContext(AuthContext); // Usar el contexto para obtener el estado de autenticación
+      return (
         <nav className="navbar navbar-expand-lg navbar-light bg-light">
             <div className="container-fluid">
                 <Link className="navbar-brand" to="/">Cerca Tuyo</Link>
@@ -41,6 +40,7 @@ export const NavBar = () => {
                                 <Link className="nav-link" to="/preferencias">Preferencias</Link>
                             </li>
                             <li className="nav-item">
+                                < >{userEmail}</>
                                 <Link className="nav-link" to="/logout">Cerrar Sesión</Link>
                             </li>
                         </ul>

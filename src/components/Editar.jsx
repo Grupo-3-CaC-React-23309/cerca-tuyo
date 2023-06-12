@@ -1,11 +1,15 @@
-import { useState, useContext } from "react";
-import { collection, addDoc } from "firebase/firestore";
+import { useEffect, useState, useContext } from "react";
+import { updateDoc,doc, getDoc } from "firebase/firestore";
 import { db } from '../firebaseConfig/firebaseConfig'
 import AuthContext from '../authentication/AuthContext';
 import { Button, Form, Container, Row, Col } from "react-bootstrap";
+import { useNavigate, useParams } from "react-router-dom";
 
-export const Crear = () => {
+export const Editar = () => {
     const { isLoggedIn, userEmail } = useContext(AuthContext);
+    
+    const { id } = useParams();
+    const navigate = useNavigate();
     
     const [nombre, setNombre] = useState("");
     const [tipo, setTipo] = useState("");
@@ -17,49 +21,62 @@ export const Crear = () => {
     const [edadUnidad, setEdadUnidad] = useState("");
     const [texto, setTexto] = useState("");
     const [imagenURL, setImagenURL] = useState("");
+    const [estado, setEstado] = useState("");
     const [usuario, setUsuario] = useState(userEmail);
     
+    const getPetById = async (id) => {
+        const pet = await getDoc(doc(db, "pets", id));
+        if (pet.exists()) {
+            setNombre(pet.data().nombre);
+            setTipo(pet.data().tipo);
+            setSexo(pet.data().sexo);
+            setTamaño(pet.data().tamaño);
+            setPeso(pet.data().peso);
+            setEdadCantidad(pet.data().edadCantidad);
+            setEdadUnidad(pet.data().edadUnidad);
+            setTexto(pet.data().texto);
+            setImagenURL(pet.data().imagenURL);
+            setEstado(pet.data().estado);
+            setUsuario(pet.data().usuario);
+        } else {
+          console.log("La mascota no existe o no está cargada");
+        }
+      };
 
-    const petsCollection = collection(db, "pets");
-
-    const handleSubmit = async (event) => {
+    const update = async (event) => {
         event.preventDefault();
+        const pet = doc(db, "pets", id);
+    
         if (isLoggedIn) {
-            await addDoc(petsCollection, {
-                nombre,
-                tipo: tipo === "Otro" ? otroTipo : tipo,
-                tamaño,
-                sexo,
-                peso,
-                texto,
-                imagenURL,
-                estado: false, // Asumiendo que las nuevas mascotas no están adoptadas
+            await updateDoc(pet, {
+                nombre: nombre,
+                tipo: tipo,
+                tamaño: tamaño,
+                sexo: sexo,
+                peso:peso,
+                texto:texto,
+                imagenURL:imagenURL,
+                estado: estado,
                 edad: `${edadCantidad} ${edadUnidad}`,
-                usuario,
+                usuario: usuario,
             });
-            // Limpiar el formulario después de la presentación
-            setNombre("");
-            setTipo("");
-            setTamaño("");
-            setPeso("");
-            setSexo("");
-            setTexto("");
-            setImagenURL("");
-            setEdadCantidad("");
-            setEdadUnidad("");
-            setUsuario(userEmail);
+            // Navegar al inicio
+            navigate("/");
+
         } else {
             alert("Por favor inicia sesión para agregar una mascota");
         }
     };
 
-
+    useEffect(() => {
+        getPetById(id);
+      }, []);
 
     return (
         <Container className="mt-5">
             <Row className="justify-content-center">
                 <Col md={6}>
-                    <Form onSubmit={handleSubmit}>
+                    <Form onSubmit={update}>
                         <Form.Group controlId="formNombre">
                             <Form.Label>Nombre</Form.Label>
                             <Form.Control type="text" value={nombre} onChange={(e) => setNombre(e.target.value)} placeholder="Ejemplo: Fido" />
@@ -142,7 +159,7 @@ export const Crear = () => {
                         </Form.Group>
 
                         <Button variant="primary" type="submit" className="mt-3">
-                            Crear
+                            Editar
                         </Button>
                     </Form>
                 </Col>

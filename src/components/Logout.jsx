@@ -16,6 +16,7 @@ export const Logout = () => {
         .then(() => {
             // El usuario ha cerrado la sesión
             authContext.onLogout();
+            authContext.userEmail="";
             navigate('/');
         })
         .catch((error) => {

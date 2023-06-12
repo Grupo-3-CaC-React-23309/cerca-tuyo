@@ -16,7 +16,7 @@ export const Login = () => {
         signInWithEmailAndPassword(auth, username, password)
         .then((userCredential) => {
             // El usuario ha iniciado sesión
-            authContext.onLogin();
+            authContext.onLogin(userCredential.user.email);
             navigate('/');
         })
         .catch((error) => {
