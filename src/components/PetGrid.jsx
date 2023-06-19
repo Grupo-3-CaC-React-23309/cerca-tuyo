@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { collection, getDocs, getDoc, updateDoc, doc } from "firebase/firestore";
 
 import { db } from '../firebaseConfig/firebaseConfig' //   "../firebaseConfig/firebaseConfig"
+import './PetGrid.css'
 
 //import { ThemeConsumer } from "react-bootstrap/esm/ThemeProvider";
 
@@ -53,7 +54,7 @@ useEffect(() => {
 
   return (
     <>
-      <div className="d-flex flex-wrap justify-content-center">
+      <div className="pet-grid d-flex flex-wrap justify-content-center">
         {pets.map((pet) => (
           <div key={pet.id} style={{ width: 'fit-content', margin: '0.5em' }}>
             <PetCard

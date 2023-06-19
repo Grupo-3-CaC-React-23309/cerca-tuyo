@@ -38,8 +38,6 @@ function App() {
       <BrowserRouter>
         <AuthContext.Provider value={{ isLoggedIn, userEmail, onLogin: handleLogin, onLogout: handleLogout }}>
           <NavBar />
-          <Footer/>
-          {/* El resto de tus componentes van aquí */}
        
         <Routes>
           <Route path="/" element={<PetGrid />} />
@@ -48,10 +46,10 @@ function App() {
           <Route path="/logout" element={<Logout />} />
           <Route path="/registro" element={<Register />} />
           <Route path="/editar/:id" element={<Editar/>} />
-          
-          {/* Aquí puedes añadir más rutas */}
-         </Routes> 
-        </AuthContext.Provider> {/* La barra de navegación se renderiza independientemente de la ruta */}
+
+          </Routes> 
+          <Footer/>
+        </AuthContext.Provider>
       </BrowserRouter>
     </div>
   );
