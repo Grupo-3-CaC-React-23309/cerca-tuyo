@@ -1,10 +1,10 @@
 import React, { useContext } from 'react';
-import { NavLink, Link } from 'react-router-dom';
+import { Dropdown } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 import AuthContext from '../authentication/AuthContext'; // Asegúrate de usar tu ruta correcta para importar
 
 export const NavBar = () => {
-    const { isLoggedIn } = useContext(AuthContext); // Usar el contexto para obtener el estado de autenticación
-
+    const { isLoggedIn, userEmail } = useContext(AuthContext); // Usar el contexto para obtener el estado de autenticación
     return (
         <nav className="navbar navbar-expand-lg navbar-light bg-light">
             <div className="container-fluid">
@@ -19,7 +19,7 @@ export const NavBar = () => {
                         </li>
                         {isLoggedIn && (
                             <li className="nav-item">
-                                <Link className="nav-link" to="/dar-en-adopcion">Dar en Adopción</Link>
+                                <Link className="nav-link" to="/crear">Dar en Adopción</Link>
                             </li>
                         )}
                         <li className="nav-item">
@@ -41,7 +41,15 @@ export const NavBar = () => {
                                 <Link className="nav-link" to="/preferencias">Preferencias</Link>
                             </li>
                             <li className="nav-item">
-                                <Link className="nav-link" to="/logout">Cerrar Sesión</Link>
+                                <Dropdown>
+                                    <Dropdown.Toggle variant="none" id="dropdown-basic">
+                                        {userEmail}
+                                    </Dropdown.Toggle>
+
+                                    <Dropdown.Menu>
+                                        <Dropdown.Item href="/logout">Cerrar Sesión</Dropdown.Item>
+                                    </Dropdown.Menu>
+                                </Dropdown>
                             </li>
                         </ul>
                     ) : (

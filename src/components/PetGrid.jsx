@@ -1,63 +1,75 @@
 import PetCard from "./PetCard";
 
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useCallback } from "react";
 
 import AuthContext from '../authentication/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
-//import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
+import { collection, getDocs, getDoc, updateDoc, doc } from "firebase/firestore";
 
-import {
-  collection,
-  getDocs,
-  updateDoc,
-  doc,
-} from "firebase/firestore";
+import { db } from '../firebaseConfig/firebaseConfig' //   "../firebaseConfig/firebaseConfig"
+import './PetGrid.css'
 
-import { db } from "../firebaseconfig/frebaseConfig";
+//import { ThemeConsumer } from "react-bootstrap/esm/ThemeProvider";
 
-
-//"../firebaseConfig/firebase.js";
 
 //import Swal from "sweetalert2"
 //import whitReactContent from "sweetalert2-react-content"
 //const mySwal = whitReactContent (Swal)
 
 export const PetGrid = () => {
-  const { isLoggedIn } = useContext(AuthContext);
+  
+  const { isLoggedIn, userEmail } = useContext(AuthContext);
+  const navigate = useNavigate();
+
   //1 configurar useState (hook)
   const [pets, setPets] = useState([]);
   //2 referenciamos a la db de firestore
   const petsCollection = collection(db, "pets");
   //3 funcion para mostrar todos los docs
-  const getPets = async () => {
+  const getPets = useCallback(async () => {
     const data = await getDocs(petsCollection);
     setPets(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-  };
+  }, [petsCollection]);
 
   const handleOnCardClick = async (id, estadoActual) => {
     const pet = doc(db, "pets", id);
-
-    await updateDoc(pet, { estado: !estadoActual });
-    getPets();
+    const petData = await getDoc(doc(db, "pets", id));
+   
+    if (userEmail === petData.data().usuario) {
+      navigate(`/editar/${pet.id}`);
+    } else {
+      await updateDoc(pet, { estado: !estadoActual });
+      getPets();  
+    }       
   };
 
-  useEffect(() => {
+useEffect(() => {
+    
+    
+    
     getPets();
   }, []);
 
+
   return (
     <>
-      <div className="d-flex flex-wrap justify-content-center">
+      <div className="pet-grid d-flex flex-wrap justify-content-center">
         {pets.map((pet) => (
           <div key={pet.id} style={{ width: 'fit-content', margin: '0.5em' }}>
-            <PetCard isLoggedIn={isLoggedIn}
+            <PetCard
+              isLoggedIn={isLoggedIn}
               imagenURL={pet.imagenURL}
               nombre={pet.nombre}
               tipo={pet.tipo}
               tamaño={pet.tamaño}
+              sexo={pet.sexo}
+              peso={pet.peso}
+              edad={pet.edad}
               texto={pet.texto}
               textoEstado={pet.estado ? "Adoptado" : "Te espera"}
-              textoBoton={pet.estado ? "Abandonar" : "Adoptar"}
+              textoBoton={(userEmail === pet.usuario) ? "Editar" : "Adoptar"}
+              
               onCardClick={() => handleOnCardClick(pet.id, pet.estado)}
             />
           </div>
