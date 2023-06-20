@@ -17,7 +17,7 @@ import './PetGrid.css'
 //import whitReactContent from "sweetalert2-react-content"
 //const mySwal = whitReactContent (Swal)
 
-export const PetGrid = ({user}) => {
+export const PetGrid1 = ({user}) => {
   
   //const { user } = useParams();
   const { isLoggedIn, userEmail } = useContext(AuthContext);
@@ -88,4 +88,4 @@ useEffect(() => {
   );
 };
 
-export default PetGrid;
+export default PetGrid1;

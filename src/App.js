@@ -8,6 +8,7 @@ import AuthContext from './authentication/AuthContext';
 import { Crear } from "./components/Crear";
 import { Editar } from "./components/Editar";
 import { PetGrid } from "./components/PetGrid";
+import { PetGrid1 } from "./components/PetGrid1";
 import { NavBar } from "./components/NavBar";
 import { Login } from "./components/Login";
 import { Logout } from "./components/Logout";
@@ -45,6 +46,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/logout" element={<Logout />} />
           <Route path="/registro" element={<Register />} />
+          <Route path="/mis-publicaciones" element={<PetGrid1 user = {userEmail} />} />
           <Route path="/editar/:id" element={<Editar/>} />
 
           </Routes> 

@@ -16,6 +16,8 @@ export const NavBar = () => {
                     <ul className="navbar-nav me-auto">
                         <li className="nav-item">
                             <Link className="nav-link" to="/">Inicio</Link>
+
+                            
                         </li>
                         {isLoggedIn && (
                             <li className="nav-item">
@@ -33,6 +35,7 @@ export const NavBar = () => {
                         <ul className="navbar-nav">
                             <li className="nav-item">
                                 <Link className="nav-link" to="/mis-publicaciones">Mis Publicaciones</Link>
+                                
                             </li>
                             <li className="nav-item">
                                 <Link className="nav-link" to="/mis-datos">Mis Datos</Link>
