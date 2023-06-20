@@ -6,7 +6,7 @@ import { Button, Form, Container, Row, Col } from "react-bootstrap";
 
 export const Crear = () => {
     const { isLoggedIn, userEmail } = useContext(AuthContext);
-    
+
     const [nombre, setNombre] = useState("");
     const [tipo, setTipo] = useState("");
     const [otroTipo, setOtroTipo] = useState("");
@@ -18,26 +18,38 @@ export const Crear = () => {
     const [texto, setTexto] = useState("");
     const [imagenURL, setImagenURL] = useState("");
     const [usuario, setUsuario] = useState(userEmail);
-    
+
 
     const petsCollection = collection(db, "pets");
 
     const handleSubmit = async (event) => {
         event.preventDefault();
         if (isLoggedIn) {
+            // Log the values to console
+            console.log("Edad Cantidad:", edadCantidad);
+            console.log("Edad Unidad:", edadUnidad);
+            console.log("Peso:", peso);
+
+            // Ensure the weight is a number
+            const numericalPeso = peso ? parseFloat(peso) : null;
+
+            // Ensure age is properly formatted
+            const edad = edadCantidad && edadUnidad ? `${edadCantidad} ${edadUnidad}` : null;
+
             await addDoc(petsCollection, {
                 nombre,
                 tipo: tipo === "Otro" ? otroTipo : tipo,
                 tamaño,
                 sexo,
-                peso,
+                peso: numericalPeso, // store it as a number
                 texto,
                 imagenURL,
-                estado: false, // Asumiendo que las nuevas mascotas no están adoptadas
-                edad: `${edadCantidad} ${edadUnidad}`,
+                estado: false,
+                edad, // store it properly formatted or as null
                 usuario,
             });
-            // Limpiar el formulario después de la presentación
+
+            // Clear the form after submission
             setNombre("");
             setTipo("");
             setTamaño("");
@@ -86,7 +98,7 @@ export const Crear = () => {
                         <Form.Group controlId="formSexo" className="mt-3">
                             <Form.Label>Sexo</Form.Label>
                             <Form.Select value={sexo} onChange={(e) => setSexo(e.target.value)}>
-                                <option disabled>Selecciona el sexo...</option>
+                                <option disabled value="">Selecciona el sexo...</option>
                                 <option>Macho</option>
                                 <option>Hembra</option>
                                 <option>Desconocido</option>
@@ -109,18 +121,18 @@ export const Crear = () => {
                         <Form.Group as={Row} controlId="formEdad" className="mt-3">
                             <Form.Label>Edad</Form.Label>
                             <Col sm={6}>
-                                <Form.Select value={edadCantidad} onChange={(e) => setEdadCantidad(e.target.value)}>
-                                    <option disabled>Elegir cantidad...</option>
+                                <Form.Select value={edadCantidad} onChange={(e) => setEdadCantidad(e.target.value.toString())}>
+                                    <option value="">Elegir cantidad...</option>
                                     {[...Array(edadUnidad === 'Meses' ? 12 : 100)].map((_, i) => (
-                                        <option key={i}>{i + 1}</option>
+                                        <option key={i} value={i + 1}>{i + 1}</option>
                                     ))}
                                 </Form.Select>
                             </Col>
                             <Col sm={6}>
-                                <Form.Select value={edadUnidad} onChange={(e) => setEdadUnidad(e.target.value)}>
-                                    <option disabled>Elegir unidad...</option>
-                                    <option>Meses</option>
-                                    <option>Años</option>
+                                <Form.Select value={edadUnidad} onChange={(e) => setEdadUnidad(e.target.value.toString())}>
+                                    <option value="">Elegir unidad...</option>
+                                    <option value="Meses">Meses</option>
+                                    <option value="Años">Años</option>
                                 </Form.Select>
                             </Col>
                         </Form.Group>
