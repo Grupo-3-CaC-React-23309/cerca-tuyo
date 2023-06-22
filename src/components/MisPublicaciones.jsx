@@ -17,9 +17,8 @@ import './PetGrid.css'
 //import whitReactContent from "sweetalert2-react-content"
 //const mySwal = whitReactContent (Swal)
 
-export const PetGrid1 = ({user}) => {
+export const MisPublicaciones = () => {
   
-  //const { user } = useParams();
   const { isLoggedIn, userEmail } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -27,21 +26,12 @@ export const PetGrid1 = ({user}) => {
   const [pets, setPets] = useState([]);
   //2 referenciamos a la db de firestore
   const petsCollection = collection(db, "pets");
-  //3 funcion para mostrar todos los docs
-  const getPets = useCallback(async () => {
-    
-    console.log(user);
-    
-    if (user === undefined) {
-      const data = await getDocs(petsCollection);
-      setPets(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-      
-    } else {
-      const q = query(petsCollection, where("usuario", "==", user));
+  //3 funcion para mostrar solo los docs del usuario (userEmail)
+  const getPets = useCallback(async () => {    
+      const q = query(petsCollection, where("usuario", "==", userEmail));
       const data = await getDocs(q);
       setPets(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));  
-    }
-  }, [petsCollection]);
+    }, [petsCollection]);
 
   const handleOnCardClick = async (id, estadoActual) => {
     const pet = doc(db, "pets", id);
@@ -58,7 +48,6 @@ export const PetGrid1 = ({user}) => {
 useEffect(() => {
     getPets();
   }, []);
-
 
   return (
     <>
@@ -88,4 +77,4 @@ useEffect(() => {
   );
 };
 
-export default PetGrid1;
+export default MisPublicaciones;

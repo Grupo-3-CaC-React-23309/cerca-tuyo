@@ -8,7 +8,7 @@ import AuthContext from './authentication/AuthContext';
 import { Crear } from "./components/Crear";
 import { Editar } from "./components/Editar";
 import { PetGrid } from "./components/PetGrid";
-import { PetGrid1 } from "./components/PetGrid1";
+import { MisPublicaciones } from "./components/MisPublicaciones";
 import { NavBar } from "./components/NavBar";
 import { Login } from "./components/Login";
 import { Logout } from "./components/Logout";
@@ -22,16 +22,13 @@ function App() {
   const [userEmail, setUserEmail] = useState("");
 
   const handleLogin = (userEmail) => {
-
     setIsLoggedIn(true);
     setUserEmail(userEmail);
-
   };
 
   const handleLogout = () => {
     setIsLoggedIn(false);
     setUserEmail("");
-
   };
 
   return (
@@ -46,10 +43,10 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/logout" element={<Logout />} />
           <Route path="/registro" element={<Register />} />
-          <Route path="/mis-publicaciones" element={<PetGrid1 user = {userEmail} />} />
+          <Route path="/mis-publicaciones" element={<MisPublicaciones />} />
           <Route path="/editar/:id" element={<Editar/>} />
 
-          </Routes> 
+        </Routes> 
           <Footer/>
         </AuthContext.Provider>
       </BrowserRouter>
