@@ -14,6 +14,7 @@ import { Login } from "./components/Login";
 import { Logout } from "./components/Logout";
 import { Register } from "./components/Register";
 import {Footer} from "./components/Footer";
+import {SobreNosotros} from "./components/SobreNosotros";
 
 
 function App() {
@@ -45,6 +46,7 @@ function App() {
           <Route path="/registro" element={<Register />} />
           <Route path="/mis-publicaciones" element={<MisPublicaciones />} />
           <Route path="/editar/:id" element={<Editar/>} />
+          <Route path= "/sobre-nosotros" element={<SobreNosotros/>}/>
 
         </Routes> 
           <Footer/>

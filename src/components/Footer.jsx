@@ -10,10 +10,10 @@ return (
     <div className="col-md-4">
       <h5>Enlaces</h5>
       <ul className="list-unstyled justify-content-between">
-        <li><a href="#">Inicio</a></li>
-        <li><a href="#">Sobre Nosotros</a></li>
-        <li><a href="#">Registrarse</a></li>
-        <li><a href="#">Login</a></li>
+        <li><a href="/#">Inicio</a></li>
+        <li><a href="/sobre-nosotros">Sobre Nosotros</a></li>
+        <li><a href="/registro">Registrarse</a></li>
+        <li><a href="/login">Login</a></li>
       </ul>
     </div>
     <div className="col-md-4">
