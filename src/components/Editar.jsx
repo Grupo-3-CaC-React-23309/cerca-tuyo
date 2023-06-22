@@ -159,7 +159,7 @@ export const Editar = () => {
                         </Form.Group>
 
                         <Button variant="primary" type="submit" className="mt-3">
-                            Editar
+                            Aceptar
                         </Button>
                     </Form>
                 </Col>

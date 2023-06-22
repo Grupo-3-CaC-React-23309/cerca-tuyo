@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import Tooltip from 'react-bootstrap/Tooltip';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Modal from 'react-bootstrap/Modal';
+import AuthContext from '../authentication/AuthContext';
 
 export const PetCard = ({
   nombre,
@@ -15,10 +16,14 @@ export const PetCard = ({
   texto,
   textoEstado,
   imagenURL,
+  usuario,
   textoBoton,
   onCardClick,
-  isLoggedIn,
+  onDeleteClick,  
 }) => {
+  const { isLoggedIn, userEmail } = useContext(AuthContext);
+  
+  
   const [showModal, setShowModal] = useState(false);
 
   const handleClose = () => setShowModal(false);
@@ -64,6 +69,16 @@ export const PetCard = ({
                 style={{ pointerEvents: !isLoggedIn ? 'none' : 'auto' }}>
                 {textoBoton}
               </Button>
+              {(userEmail === usuario) &&
+              <Button
+                variant="danger"
+                onClick={onDeleteClick}
+                disabled={!isLoggedIn}
+                style={{ pointerEvents: !isLoggedIn ? 'none' : 'auto' }}>
+                Eliminar
+              </Button>
+              }
+              
             </span>
           </OverlayTrigger>
           <Button variant="secondary" onClick={handleClose}>Close</Button>
