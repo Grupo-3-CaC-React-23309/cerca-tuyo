@@ -49,7 +49,7 @@ export const PetCard = ({
           <p><strong>Tipo:</strong> {tipo || "Información no disponible"}</p>
           <p><strong>Tamaño:</strong> {tamaño || "Información no disponible"}</p>
           <p><strong>Sexo:</strong> {sexo ? sexo : "Información no disponible"}</p>
-          <p><strong>Edad:</strong> {edadUnidad ? edadUnidad : "Información no disponible"}{edadCantidad ? edadCantidad : "Información no disponible"}</p>
+          <p><strong>Edad:</strong> {edadCantidad || "Información no disponible"} {edadUnidad || "Información no disponible"}</p>
           <p><strong>Peso:</strong> {peso+"kg."|| "Información no disponible"}</p>
           <p><strong>Descripción:</strong> {texto || "Información no disponible"}</p>
           <p><strong>Estado:</strong> {textoEstado || "Información no disponible"}</p>
