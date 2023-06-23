@@ -12,7 +12,8 @@ export const PetCard = ({
   tamaño,
   sexo,
   peso,
-  edad,
+  edadCantidad,
+  edadUnidad,
   texto,
   textoEstado,
   imagenURL,
@@ -36,7 +37,7 @@ export const PetCard = ({
         <Card.Body style={{ position: 'absolute', bottom: '0', left: '0', color: '#fff', background: 'linear-gradient(rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.7) 70%, rgba(0, 0, 0, 1) 100%)', transition: 'all 0.5s', width: '100%', height: '100%', display: 'flex', alignItems: 'flex-end', justifyContent: 'end', flexDirection: 'column', padding: '1rem' }}>
           <Card.Title style={{ fontSize: "1.5em" }}>{nombre || "Información no disponible"}</Card.Title>
           <Card.Text><strong>Sexo:</strong> {sexo ? sexo : "Información no disponible"}</Card.Text>
-          <Card.Text><strong>Edad:</strong> {edad ? edad : "Información no disponible"}</Card.Text>
+          <Card.Text><strong>Edad:</strong> {edadCantidad || "Información no disponible"} {edadUnidad || "Información no disponible"}</Card.Text>
         </Card.Body>
       </Card>
 
@@ -48,7 +49,7 @@ export const PetCard = ({
           <p><strong>Tipo:</strong> {tipo || "Información no disponible"}</p>
           <p><strong>Tamaño:</strong> {tamaño || "Información no disponible"}</p>
           <p><strong>Sexo:</strong> {sexo ? sexo : "Información no disponible"}</p>
-          <p><strong>Edad:</strong> {edad ? edad : "Información no disponible"}</p>
+          <p><strong>Edad:</strong> {edadUnidad ? edadUnidad : "Información no disponible"}{edadCantidad ? edadCantidad : "Información no disponible"}</p>
           <p><strong>Peso:</strong> {peso+"kg."|| "Información no disponible"}</p>
           <p><strong>Descripción:</strong> {texto || "Información no disponible"}</p>
           <p><strong>Estado:</strong> {textoEstado || "Información no disponible"}</p>

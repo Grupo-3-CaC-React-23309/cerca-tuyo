@@ -34,7 +34,8 @@ export const Crear = () => {
             const numericalPeso = peso ? parseFloat(peso) : null;
 
             // Ensure age is properly formatted
-            const edad = edadCantidad && edadUnidad ? `${edadCantidad} ${edadUnidad}` : null;
+            //const edad = edadCantidad && edadUnidad ? `${edadCantidad} ${edadUnidad}` : null;
+            //const edad = edadCantidad && edadUnidad ? `${edadCantidad} ${edadUnidad}` : null;
 
             await addDoc(petsCollection, {
                 nombre,
@@ -45,7 +46,8 @@ export const Crear = () => {
                 texto,
                 imagenURL,
                 estado: false,
-                edad, // store it properly formatted or as null
+                edadCantidad, 
+                edadUnidad,            // store it properly formatted or as null
                 usuario,
             });
 

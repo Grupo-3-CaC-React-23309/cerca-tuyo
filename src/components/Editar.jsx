@@ -57,7 +57,8 @@ export const Editar = () => {
                 texto:texto,
                 imagenURL:imagenURL,
                 estado: estado,
-                edad: `${edadCantidad} ${edadUnidad}`,
+                edadCantidad: edadCantidad,
+                edadUnidad: edadUnidad,
                 usuario: usuario,
             });
             // Navegar al inicio
