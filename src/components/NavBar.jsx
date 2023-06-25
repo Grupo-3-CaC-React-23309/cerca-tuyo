@@ -55,10 +55,10 @@ export const NavBar = () => {
                     ) : (
                         <ul className="navbar-nav">
                             <li className="nav-item">
-                                <Link className="nav-link" to="/login">Login</Link>
+                                <Link className="nav-link" to="/login">Iniciar sesion</Link>
                             </li>
                             <li className="nav-item">
-                                <Link className="nav-link" to="/registro">Registro</Link>
+                                <Link className="nav-link" to="/registro">Registrarme</Link>
                             </li>
                         </ul>
                     )}
