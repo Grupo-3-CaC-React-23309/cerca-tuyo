@@ -27,9 +27,7 @@ export const NavBar = () => {
                         <li className="nav-item">
                             <Link className="nav-link" to="/sobre-nosotros">Sobre Nosotros</Link>
                         </li>
-                        <li className="nav-item">
-                            <Link className="nav-link" to="/contacto">Contacto</Link>
-                        </li>
+                        
                     </ul>
                     {isLoggedIn ? (
                         <ul className="navbar-nav">
@@ -40,9 +38,7 @@ export const NavBar = () => {
                             <li className="nav-item">
                                 <Link className="nav-link" to="/mis-datos">Mis Datos</Link>
                             </li>
-                            <li className="nav-item">
-                                <Link className="nav-link" to="/preferencias">Preferencias</Link>
-                            </li>
+                            
                             <li className="nav-item">
                                 <Dropdown>
                                     <Dropdown.Toggle variant="none" id="dropdown-basic">
