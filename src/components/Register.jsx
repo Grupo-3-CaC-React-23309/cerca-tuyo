@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react';
 import AuthContext from '../authentication/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { auth, createUserWithEmailAndPassword } from '../firebaseConfig/firebaseConfig';
+import "./Register.css"
 
 export const Register = () => {
     const [username, setUsername] = useState("");
@@ -33,16 +34,32 @@ export const Register = () => {
     };
 
     return (
-        <div>
-            <h2>Registro</h2>
+        <div className='container registro'>
+            <div className='row'>
+                <div className='col mt-4'>
+                <h2>Registro</h2>
             {error && <p>{error}</p>}
             <form onSubmit={handleRegister}>
-                <input type="text" placeholder="Email" value={username} onChange={(e) => setUsername(e.target.value)} />
-                <input type="password" placeholder="Contraseña" value={password} onChange={(e) => setPassword(e.target.value)} />
-                <button type="submit">Registrarse</button>
+                <div className='mb-4 mt-4'>
+                
+                <input type="text" placeholder="Email" className='form-control' value={username} onChange={(e) => setUsername(e.target.value)} />
+                </div>
+                <div className='mb-4'>
+                <input type="password" placeholder="Contraseña" className='form-control' value={password} onChange={(e) => setPassword(e.target.value)} />
+                </div>
+                <div className=' mb-4'>
+                <button type="submit" className='btn btn-secondary'>Registrarse</button>
+                </div>
+                
             </form>
+                </div>
+            
+            </div>
+           
         </div>
     );
 };
+
+
 
 export default Register;
