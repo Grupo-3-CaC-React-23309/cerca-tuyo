@@ -1,7 +1,8 @@
 import PetCard from "./PetCard";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useContext, useCallback } from "react";
 
+import AuthContext from '../authentication/AuthContext';
 import { collection, getDocs, updateDoc, doc } from "firebase/firestore";
 
 import { db } from '../firebaseConfig/firebaseConfig' //   "../firebaseConfig/firebaseConfig"
@@ -15,26 +16,32 @@ import './PetGrid.css'
 //const mySwal = whitReactContent (Swal)
 
 export const PetGrid = () => {
+  const { userEmail } = useContext(AuthContext);
   
-  //1 configurar useState (hook)
   const [pets, setPets] = useState([]);
-  //2 referenciamos a la db de firestore
   const petsCollection = collection(db, "pets");
-  //3 funcion para mostrar todos los docs
   const getPets = useCallback(async () => {
-      const data = await getDocs(petsCollection);
-      setPets(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-  }, [petsCollection]);
+    const data = await getDocs(petsCollection);
+    const allPets = data.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+
+    // Si el usuario está logueado, filtra sus publicaciones
+    if (userEmail) {
+      const filteredPets = allPets.filter(pet => pet.usuario !== userEmail);
+      setPets(filteredPets);
+    } else {
+      setPets(allPets);
+    }
+  }, [petsCollection, userEmail]);
 
   const handleOnCardClick = async (id, estadoActual) => {
     const pet = doc(db, "pets", id);
     await updateDoc(pet, { estado: !estadoActual });
-    getPets();    //actualiza el componenete   
+    getPets();    //actualiza el componente   
   };
 
-useEffect(() => {
+  useEffect(() => {
     getPets();
-  }, []);
+  }, [getPets]);
 
 
   return (
@@ -48,7 +55,7 @@ useEffect(() => {
               tipo={pet.tipo}
               tamaño={pet.tamaño}
               sexo={pet.sexo}
-              peso={pet.peso}
+              peso={pet.peso} 
               edadCantidad={pet.edadCantidad}
               edadUnidad={pet.edadUnidad}
               texto={pet.texto}

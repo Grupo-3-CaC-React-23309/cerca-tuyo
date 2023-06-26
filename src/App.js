@@ -46,7 +46,7 @@ function App() {
           <Route path="/registro" element={<Register />} />
           <Route path="/mis-publicaciones" element={<MisPublicaciones />} />
           <Route path="/editar/:id" element={<Editar/>} />
-          <Route path= "/sobre-nosotros" element={<SobreNosotros/>}/>
+          <Route path="/sobre-nosotros" element={<SobreNosotros/>}/>
 
         </Routes> 
           <Footer/>

@@ -20,11 +20,11 @@ export const PetCard = ({
   usuario,
   textoBoton,
   onCardClick,
-  onDeleteClick,  
+  onDeleteClick,
 }) => {
   const { isLoggedIn, userEmail } = useContext(AuthContext);
-  
-  
+
+
   const [showModal, setShowModal] = useState(false);
 
   const handleClose = () => setShowModal(false);
@@ -50,18 +50,39 @@ export const PetCard = ({
           <p><strong>Tamaño:</strong> {tamaño || "Información no disponible"}</p>
           <p><strong>Sexo:</strong> {sexo ? sexo : "Información no disponible"}</p>
           <p><strong>Edad:</strong> {edadCantidad || "Información no disponible"} {edadUnidad || "Información no disponible"}</p>
-          <p><strong>Peso:</strong> {peso+"kg."|| "Información no disponible"}</p>
+          <p><strong>Peso:</strong> {peso + "kg." || "Información no disponible"}</p>
           <p><strong>Descripción:</strong> {texto || "Información no disponible"}</p>
           <p><strong>Estado:</strong> {textoEstado || "Información no disponible"}</p>
         </Modal.Body>
         <Modal.Footer>
-          <OverlayTrigger
-            overlay={
-              <Tooltip id="tooltip-disabled">
-                {!isLoggedIn ? 'Por favor inicia sesión' : ''}
-              </Tooltip>
-            }
-          >
+          {!isLoggedIn ? (
+            <OverlayTrigger
+              overlay={
+                <Tooltip id="tooltip-disabled">
+                  'Por favor inicia sesión'
+                </Tooltip>
+              }
+            >
+              <span className="d-inline-block">
+                <Button
+                  variant="primary"
+                  onClick={onCardClick}
+                  disabled={!isLoggedIn}
+                  style={{ pointerEvents: !isLoggedIn ? 'none' : 'auto' }}>
+                  {textoBoton}
+                </Button>
+                {(userEmail === usuario) &&
+                  <Button
+                    variant="danger"
+                    onClick={onDeleteClick}
+                    disabled={!isLoggedIn}
+                    style={{ pointerEvents: !isLoggedIn ? 'none' : 'auto' }}>
+                    Eliminar
+                  </Button>
+                }
+              </span>
+            </OverlayTrigger>
+          ) : (
             <span className="d-inline-block">
               <Button
                 variant="primary"
@@ -71,17 +92,16 @@ export const PetCard = ({
                 {textoBoton}
               </Button>
               {(userEmail === usuario) &&
-              <Button
-                variant="danger"
-                onClick={onDeleteClick}
-                disabled={!isLoggedIn}
-                style={{ pointerEvents: !isLoggedIn ? 'none' : 'auto' }}>
-                Eliminar
-              </Button>
+                <Button
+                  variant="danger"
+                  onClick={onDeleteClick}
+                  disabled={!isLoggedIn}
+                  style={{ pointerEvents: !isLoggedIn ? 'none' : 'auto' }}>
+                  Eliminar
+                </Button>
               }
-              
             </span>
-          </OverlayTrigger>
+          )}
           <Button variant="secondary" onClick={handleClose}>Close</Button>
         </Modal.Footer>
       </Modal>
