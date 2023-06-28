@@ -41,7 +41,7 @@ export const PetGrid = () => {
 
   useEffect(() => {
     getPets();
-  }, [getPets]);
+  }, []);
 
 
   return (
