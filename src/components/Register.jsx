@@ -15,7 +15,7 @@ export const Register = () => {
     const [tieneMascotas, setTieneMascotas] = useState(false);
     const navigate = useNavigate();
 
-    const handleRegister = (e) => {
+    const handleRegister = (e) => { 
         e.preventDefault();
 
         // Comprobando la longitud de la contraseña y si contiene al menos un número
