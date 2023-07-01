@@ -155,7 +155,7 @@ export const Crear = () => {
                             <Form.Control type="text" value={imagenURL} onChange={(e) => setImagenURL(e.target.value)} placeholder="Ejemplo: https://misitio.com/imagen.jpg" />
                         </Form.Group>
 
-                        <Button variant="primary" type="submit" className="mt-3">
+                        <Button variant="primary" type="submit" className="mt-3 mb-3">
                             Crear
                         </Button>
                     </Form>

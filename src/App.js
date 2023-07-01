@@ -21,6 +21,7 @@ function App() {
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userEmail, setUserEmail] = useState("");
+  const [darkMode, setDarkMode] = useState(false);
 
   const handleLogin = (userEmail) => {
     setIsLoggedIn(true);
@@ -31,12 +32,16 @@ function App() {
     setIsLoggedIn(false);
     setUserEmail("");
   };
+ 
+  const toggleDarkMode = () => {
+    setDarkMode(!darkMode);
+  };
 
   return (
-    <div className="App">
+    <div className={`App ${darkMode ? 'dark-mode' : ''}`}>
       <BrowserRouter>
         <AuthContext.Provider value={{ isLoggedIn, userEmail, onLogin: handleLogin, onLogout: handleLogout }}>
-          <NavBar />
+        <NavBar toggleDarkMode={toggleDarkMode} darkMode={darkMode} />
        
         <Routes>
           <Route path="/" element={<PetGrid />} />
@@ -49,7 +54,7 @@ function App() {
           <Route path="/sobre-nosotros" element={<SobreNosotros/>}/>
 
         </Routes> 
-          <Footer/>
+          <Footer darkMode={darkMode}/>
         </AuthContext.Provider>
       </BrowserRouter>
     </div>

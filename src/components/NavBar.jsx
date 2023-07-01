@@ -3,10 +3,16 @@ import { Dropdown } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import AuthContext from '../authentication/AuthContext'; // Asegúrate de usar tu ruta correcta para importar
 
-export const NavBar = () => {
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faMoon, faSun } from '@fortawesome/free-solid-svg-icons';
+
+import './NavBar.css'
+
+
+export const NavBar = ({ toggleDarkMode, darkMode }) => {
     const { isLoggedIn, userEmail } = useContext(AuthContext); // Usar el contexto para obtener el estado de autenticación
     return (
-        <nav className="navbar navbar-expand-lg navbar-light bg-light">
+        <nav className={`navbar navbar-expand-lg ${darkMode ? 'dark-mode' : ''}`}>
             <div className="container-fluid">
                 <Link className="navbar-brand" to="/">Cerca Tuyo</Link>
                 <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -17,7 +23,7 @@ export const NavBar = () => {
                         <li className="nav-item">
                             <Link className="nav-link" to="/">Inicio</Link>
 
-                            
+
                         </li>
                         {isLoggedIn && (
                             <li className="nav-item">
@@ -27,18 +33,17 @@ export const NavBar = () => {
                         <li className="nav-item">
                             <Link className="nav-link" to="/sobre-nosotros">Sobre Nosotros</Link>
                         </li>
-                        
                     </ul>
                     {isLoggedIn ? (
                         <ul className="navbar-nav">
                             <li className="nav-item">
                                 <Link className="nav-link" to="/mis-publicaciones">Mis Publicaciones</Link>
-                                
+
                             </li>
                             <li className="nav-item">
                                 <Link className="nav-link" to="/mis-datos">Mis Datos</Link>
                             </li>
-                            
+
                             <li className="nav-item">
                                 <Dropdown>
                                     <Dropdown.Toggle variant="none" id="dropdown-basic">
@@ -59,8 +64,16 @@ export const NavBar = () => {
                             <li className="nav-item">
                                 <Link className="nav-link" to="/registro">Registrame</Link>
                             </li>
+
                         </ul>
                     )}
+                    <ul className="navbar-nav">
+                        <li className="nav-item">
+                            <button type="button" className="btn toggle-mode" onClick={toggleDarkMode}>
+                                <FontAwesomeIcon className={darkMode ? "icon-sun-dark" : ""} icon={darkMode ? faSun : faMoon} />
+                            </button>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </nav>
