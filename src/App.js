@@ -13,8 +13,9 @@ import { NavBar } from "./components/NavBar";
 import { Login } from "./components/Login";
 import { Logout } from "./components/Logout";
 import { Register } from "./components/Register";
-import {Footer} from "./components/Footer";
-import {SobreNosotros} from "./components/SobreNosotros";
+import { Footer } from "./components/Footer";
+import { SobreNosotros } from "./components/SobreNosotros";
+import { MisDatos } from "./components/MisDatos";
 
 
 function App() {
@@ -32,7 +33,7 @@ function App() {
     setIsLoggedIn(false);
     setUserEmail("");
   };
- 
+
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
   };
@@ -41,20 +42,21 @@ function App() {
     <div className={`App ${darkMode ? 'dark-mode' : ''}`}>
       <BrowserRouter>
         <AuthContext.Provider value={{ isLoggedIn, userEmail, onLogin: handleLogin, onLogout: handleLogout }}>
-        <NavBar toggleDarkMode={toggleDarkMode} darkMode={darkMode} />
-       
-        <Routes>
-          <Route path="/" element={<PetGrid />} />
-          <Route path="/crear" element={<Crear />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/logout" element={<Logout />} />
-          <Route path="/registro" element={<Register />} />
-          <Route path="/mis-publicaciones" element={<MisPublicaciones />} />
-          <Route path="/editar/:id" element={<Editar/>} />
-          <Route path="/sobre-nosotros" element={<SobreNosotros/>}/>
+          <NavBar toggleDarkMode={toggleDarkMode} darkMode={darkMode} />
 
-        </Routes> 
-          <Footer darkMode={darkMode}/>
+          <Routes>
+            <Route path="/" element={<PetGrid />} />
+            <Route path="/crear" element={<Crear />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/logout" element={<Logout />} />
+            <Route path="/registro" element={<Register />} />
+            <Route path="/mis-publicaciones" element={<MisPublicaciones />} />
+            <Route path="/editar/:id" element={<Editar />} />
+            <Route path="/sobre-nosotros" element={<SobreNosotros />} />
+            <Route path="/mis-datos" element={<MisDatos />} />
+
+          </Routes>
+          <Footer darkMode={darkMode} />
         </AuthContext.Provider>
       </BrowserRouter>
     </div>
