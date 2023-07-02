@@ -1,3 +1,7 @@
+.navbar {
+    background-color: #f5f5f5;
+}
+
 .navbar.dark-mode {
     background-color: #3b3b3b;
 }

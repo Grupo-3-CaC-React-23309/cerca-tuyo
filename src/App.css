@@ -1,13 +1,26 @@
-html, body {
+html,
+body {
   height: 100%;
   margin: 0;
   font-family: Arial, sans-serif;
 }
 
+
+body {
+  -ms-overflow-style: none; /* for Internet Explorer, Edge */
+  scrollbar-width: none; /* for Firefox */
+  overflow-y: scroll; 
+}
+
+body::-webkit-scrollbar {
+  display: none; /* for Chrome, Safari, and Opera */
+}
+
 .App {
   display: flex;
   flex-direction: column;
-  min-height: 100vh; /* use viewport height to ensure it takes at least the full viewport height */
+  min-height: 100vh;
+  /* use viewport height to ensure it takes at least the full viewport height */
 }
 
 .main-content {
