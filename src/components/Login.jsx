@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { auth, signInWithEmailAndPassword, sendPasswordResetEmail } from '../firebaseConfig/firebaseConfig'
 import "./Login.css"
 
-export const Login = () => {
+export const Login = ({ darkMode }) => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
@@ -40,10 +40,11 @@ export const Login = () => {
     };
 
     return (
-        <div className='container iniSesion'>
+       
+        <div className={`container iniSesion ${darkMode ? 'dark-mode' : ''}`}>
             <div className='row'>
                 <div className='col mt-4'>
-                    <h2>Iniciar sesion</h2>
+                    <h2 className="dark-modeLogin">Iniciar sesion</h2>
                     {error && <p>{error}</p>}
                     <div className='mb-4 mt-4'>
                         <input type="text" placeholder="Email" className='form-control' value={username} onChange={(e) => setUsername(e.target.value)} />
@@ -61,8 +62,8 @@ export const Login = () => {
 
                 </div>
             </div>
-
         </div>
+    
     );
 };
 

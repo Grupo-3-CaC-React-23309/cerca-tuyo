@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { auth, createUserWithEmailAndPassword } from '../firebaseConfig/firebaseConfig';
 import "./Register.css"
 
-export const Register = () => {
+export const Register = ({ darkMode }) => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
@@ -34,7 +34,7 @@ export const Register = () => {
     };
 
     return (
-        <div className='container registro'>
+        <div className={`container registro ${darkMode ? 'dark-mode' : ''}`}>
             <div className='row'>
                 <div className='col mt-4'>
                 <h2>Registro</h2>

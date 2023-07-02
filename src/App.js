@@ -48,9 +48,9 @@ function App() {
           <Routes>
             <Route path="/" element={<PetGrid />} />
             <Route path="/crear" element={<Crear />} />
-            <Route path="/login" element={<Login />} />
+            <Route path="/login" element={<Login darkMode={darkMode} />} />
             <Route path="/logout" element={<Logout />} />
-            <Route path="/registro" element={<Register />} />
+            <Route path="/registro" element={<Register darkMode={darkMode} />} />
             <Route path="/mis-publicaciones" element={<MisPublicaciones />} />
             <Route path="/editar/:id" element={<Editar />} />
             <Route path="/sobre-nosotros" element={<SobreNosotros />} />
