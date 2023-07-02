@@ -16,6 +16,7 @@ import { Register } from "./components/Register";
 import { Footer } from "./components/Footer";
 import { SobreNosotros } from "./components/SobreNosotros";
 import { MisDatos } from "./components/MisDatos";
+import { EditarDatos } from './components/EditarDatos';
 
 
 function App() {
@@ -54,6 +55,7 @@ function App() {
             <Route path="/editar/:id" element={<Editar />} />
             <Route path="/sobre-nosotros" element={<SobreNosotros />} />
             <Route path="/mis-datos" element={<MisDatos />} />
+            <Route path="/editar-datos" element={<EditarDatos />} />
 
           </Routes>
           <Footer darkMode={darkMode} />

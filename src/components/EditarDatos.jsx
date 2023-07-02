@@ -3,58 +3,68 @@ import { db } from '../firebaseConfig/firebaseConfig'
 import AuthContext from '../authentication/AuthContext';
 import { Button, Form, Container, Row, Col } from "react-bootstrap";
 import { useNavigate } from 'react-router-dom';
-import { collection, addDoc, query, where, getDocs } from "firebase/firestore";
+import { doc, updateDoc, collection, query, where, getDocs } from "firebase/firestore";
 
-export const MisDatos = () => {
+export const EditarDatos = () => {
     const { isLoggedIn, userEmail } = useContext(AuthContext);
 
     const navigate = useNavigate();
+    const [docId, setDocId] = useState(null);  // NEW: Store the document ID to update
+
+    // Add these state variables:
+    const [nombre, setNombre] = useState("");
+    const [apellido, setApellido] = useState("");
+    const [domicilio, setDomicilio] = useState("");
+    const [localidad, setLocalidad] = useState("");
+    const [codigoPostal, setCodigoPostal] = useState("");
+    const [tipo, setTipo] = useState("");
+    const [condicion, setCondicion] = useState("");
+    const [convivientes, setConvivientes] = useState("");
+    const [otrasMascotas, setOtrasMascotas] = useState("");
+    const [vacaciones, setVacaciones] = useState("");
 
     useEffect(() => {
-        const checkIfUserExists = async () => {
+        const getExistingUser = async () => {
             if (isLoggedIn) {
                 const q = query(collection(db, "personas"), where("user", "==", userEmail));
                 const querySnapshot = await getDocs(q);
                 if (!querySnapshot.empty) {
-                    navigate("/editar-datos");
+                    const docData = querySnapshot.docs[0];
+                    console.log(docData)
+                    setDocId(docData.id);  // Store the document ID
+                    const data = docData.data();
+                    setNombre(data.nombre);
+                    setApellido(data.apellido);
+                    setDomicilio(data.domicilio);
+                    setLocalidad(data.localidad);
+                    setCodigoPostal(data.codigoPostal.toString());  // Convert back to string for the form
+                    setTipo(data.vivienda);
+                    setCondicion(data.condicion);
+                    setConvivientes(data.convivientes);
+                    setOtrasMascotas(data.otrasMascotas);
+                    setVacaciones(data.vacaciones);
+                } else {
+                    navigate("/mis-datos");
                 }
             }
         }
 
-        checkIfUserExists();
+        getExistingUser();
     }, [isLoggedIn, userEmail, navigate]);
-
-    const [nombre, setNombre] = useState("");
-    const [tipo, setTipo] = useState("");
-    const [localidad, setLocalidad] = useState("");
-    const [otrasMascotas, setOtrasMascotas] = useState("");
-    const [apellido, setApellido] = useState("");
-    const [domicilio, setDomicilio] = useState("");
-    const [codigoPostal, setCodigoPostal] = useState("");
-    const [condicion, setCondicion] = useState("");
-    const [convivientes, setConvivientes] = useState("");
-    const [vacaciones, setVacaciones] = useState("");
-
-    const Formulario = collection(db, "personas");
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        if (isLoggedIn) {
-            // Validar que los campos obligatorios no estén vacíos
-            if (nombre === "" || tipo === "" || localidad === "" || otrasMascotas === "") {
-                alert("Por favor completá todos los datos obligatorios");
-                return;
-            }
 
-            // Ensure the Codigo Postal is a number
-            const numerica = codigoPostal ? parseFloat(codigoPostal) : null;
+        const numerica = codigoPostal ? parseFloat(codigoPostal) : null;
 
-            await addDoc(Formulario, {
+        if (docId) {  // Make sure we have a document to update
+            const docToUpdate = doc(db, "personas", docId);
+            await updateDoc(docToUpdate, {
                 nombre,
                 apellido,
                 domicilio,
                 localidad,
-                codigoPostal: numerica, // store it as a number
+                codigoPostal: numerica,
                 vivienda: tipo,
                 condicion,
                 convivientes,
@@ -62,20 +72,9 @@ export const MisDatos = () => {
                 vacaciones,
                 user: userEmail,
             });
-
-            // Clear the form after submission
-            setNombre("");
-            setTipo("");
-            setLocalidad("");
-            setOtrasMascotas("");
-            setApellido("");
-            setDomicilio("");
-            setCodigoPostal("");
-            setCondicion("");
-            setConvivientes("");
-            setVacaciones("");
+            alert("Datos actualizados correctamente");
         } else {
-            alert("Por favor completá todos los datos");
+            alert("Hubo un problema al actualizar tus datos");
         }
     };
 
