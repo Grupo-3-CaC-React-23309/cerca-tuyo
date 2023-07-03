@@ -39,36 +39,34 @@ export const MisPublicaciones = () => {
     const pet = doc(db, "pets", id);
     const petData = await getDoc(doc(db, "pets", id));
 
-    if (userEmail === petData.data().usuario && petData.data().estado < 20) 
-    {
+    if (userEmail === petData.data().usuario && petData.data().estado < 20) {
       navigate(`/editar/${pet.id}`);
     } else {
       //tiene pedidos de adopcion
-console.log("Seleccion del adoptante");
-    //TO DO
-    //
-    //
-    //
+      console.log("Seleccion del adoptante");
+      //TO DO
+      //
+      //
+      //
+      navigate(`/adoptantes/${pet.id}`);
 
-
-      getPets(); //para actualizar la vista
+      //getPets(); //para actualizar la vista
     }
   };
 
   const handleOnDeleteClick = async (id) => {
     const pet = doc(db, "pets", id);
     const petData = await getDoc(doc(db, "pets", id));
-    console.log(userEmail); 
-    console.log(petData.data().usuario); 
-    console.log(petData.data().estado); 
-    console.log(petData.data().usuario && petData.data().estado < 20); 
- 
-    if (userEmail === petData.data().usuario && petData.data().estado < 20) 
-      {
-        await updateDoc(pet, { estado: 999, timestamp: serverTimestamp() }); //actualiza el estado a pre-adoptado
-      
-        getPets(); //para actualizar la vista
-      }
+    console.log(userEmail);
+    console.log(petData.data().usuario);
+    console.log(petData.data().estado);
+    console.log(petData.data().usuario && petData.data().estado < 20);
+
+    if (userEmail === petData.data().usuario && petData.data().estado < 20) {
+      await updateDoc(pet, { estado: 999, timestamp: serverTimestamp() }); //actualiza el estado a pre-adoptado
+
+      getPets(); //para actualizar la vista
+    }
   };
 
   useEffect(() => {
@@ -96,9 +94,17 @@ console.log("Seleccion del adoptante");
               textoEstado={
                 pet.estado < 20
                   ? "Podes Editar y/o Eliminar"
-                  : pet.estado <500 ? "Tiene pedidos de adopcion":"Eliminado"
+                  : pet.estado < 500
+                  ? "Tiene pedidos de adopcion"
+                  : "Eliminado"
               }
-              textoBoton={pet.estado < 20 ? "Editar" : pet.estado <500 ? "Seleccionar":"Eliminado"} //dentro de MisPublicaciones solo se puede editar, NO adoptar
+              textoBoton={
+                pet.estado < 20
+                  ? "Editar"
+                  : pet.estado < 500
+                  ? "Seleccionar"
+                  : "Eliminado"
+              } //dentro de MisPublicaciones solo se puede editar, NO adoptar
               onCardClick={() => handleOnCardClick(pet.id, pet.estado)}
               onDeleteClick={() => handleOnDeleteClick(pet.id)}
             />

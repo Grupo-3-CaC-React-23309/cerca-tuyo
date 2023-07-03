@@ -53,6 +53,7 @@ function App() {
             <Route path="/registro" element={<Register darkMode={darkMode} />} />
             <Route path="/mis-publicaciones" element={<MisPublicaciones />} />
             <Route path="/editar/:id" element={<Editar />} />
+            <Route path="/adoptantes/:id" element={<Adoptantes />} />
             <Route path="/sobre-nosotros" element={<SobreNosotros />} />
             <Route path="/mis-datos" element={<MisDatos />} />
             <Route path="/editar-datos" element={<EditarDatos />} />
