@@ -39,13 +39,18 @@ export const MisPublicaciones = () => {
     const pet = doc(db, "pets", id);
     const petData = await getDoc(doc(db, "pets", id));
 
-    if (userEmail === petData.data().usuario && pet.estado < 20) 
+    if (userEmail === petData.data().usuario && petData.data().estado < 20) 
     {
       navigate(`/editar/${pet.id}`);
     } else {
       //tiene pedidos de adopcion
+console.log("Seleccion del adoptante");
+    //TO DO
+    //
+    //
+    //
 
-    
+
       getPets(); //para actualizar la vista
     }
   };

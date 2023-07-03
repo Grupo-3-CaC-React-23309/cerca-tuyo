@@ -183,11 +183,11 @@ export const PetCard = ({
               >
                 {preAdoptado ? "Ya te postulaste" : textoBoton}
               </Button>
-              {((userEmail === usuario) && (!preAdoptado) && (estado !== 999)) &&  (
+              {((userEmail === usuario) && (estado < 20)) &&  (
                 <Button
                   variant="danger"
                   onClick={deleteClose}
-                  disabled={preAdoptado}
+                  disabled = {preAdoptado}
                   style={{ pointerEvents: !isLoggedIn ? "none" : "auto" }}
                 >
                   Eliminar
