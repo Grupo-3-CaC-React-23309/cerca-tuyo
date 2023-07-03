@@ -9,6 +9,8 @@ import { Crear } from "./components/Crear";
 import { Editar } from "./components/Editar";
 import { PetGrid } from "./components/PetGrid";
 import { MisPublicaciones } from "./components/MisPublicaciones";
+import { Adoptantes } from "./components/Adoptantes";
+import { Persona } from "./components/Persona";
 import { NavBar } from "./components/NavBar";
 import { Login } from "./components/Login";
 import { Logout } from "./components/Logout";
@@ -54,6 +56,7 @@ function App() {
             <Route path="/mis-publicaciones" element={<MisPublicaciones />} />
             <Route path="/editar/:id" element={<Editar />} />
             <Route path="/adoptantes/:id" element={<Adoptantes />} />
+            <Route path="/persona/:id" element={<Persona />} />
             <Route path="/sobre-nosotros" element={<SobreNosotros />} />
             <Route path="/mis-datos" element={<MisDatos />} />
             <Route path="/editar-datos" element={<EditarDatos />} />

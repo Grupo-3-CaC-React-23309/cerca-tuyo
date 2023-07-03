@@ -5,7 +5,7 @@ import { useState, useEffect, useContext, useCallback } from "react";
 import AuthContext from "../authentication/AuthContext";
 import { collection, getDocs, updateDoc, doc,setDoc, serverTimestamp } from "firebase/firestore";
 
-import { db } from "../firebaseConfig/firebaseConfig"; //   "../firebaseConfig/firebaseConfig"
+import { db } from "../firebaseConfig/firebaseConfig"; 
 import "./PetGrid.css";
 /*
 
@@ -14,6 +14,7 @@ Estados de la mascota:
     10 = mascota en adopcion
     20 = mascota con pedido de adopcion
     500 = mascota adoptada  (luego de que el usuario creador acepte el pedido)
+    800 = mascota entregada    
     999 = mascota dada de baja (solo el usuario creador puede hacerlo siempre que no este adoptada)
 
 */
@@ -36,7 +37,7 @@ export const PetGrid = () => {
       const filteredPets = allPets.filter((pet) => pet.usuario !== userEmail);
       setPets(filteredPets);
     } else {
-      const filteredPets = allPets.filter((pet) => pet.estado !== 999);
+      const filteredPets = allPets.filter((pet) => pet.estado < 500);
       setPets(filteredPets);
     }
   }, [petsCollection, userEmail]);
@@ -45,7 +46,7 @@ export const PetGrid = () => {
   const handleOnCardClick = async (idPet, estadoActual) => {
     // crea una sub coleccion (adoptants) de pre-adoptantes
     const adoptantRef = doc(collection(db, "pets", idPet, "adoptants"));
-    const adoptantDoc = await setDoc(adoptantRef, {
+    await setDoc(adoptantRef, {
       id: adoptantRef.id,
       usuario: userEmail,
       timestamp: serverTimestamp(),

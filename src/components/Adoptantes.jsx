@@ -1,91 +1,100 @@
-import PetCard from "./PetCard";
+import Persona from "./Persona";
 
 import { useState, useEffect, useContext, useCallback } from "react";
+import Button from "react-bootstrap/Button";
+import ListGroup from "react-bootstrap/ListGroup";
+import ListGroupItem from "react-bootstrap/ListGroupItem";
+import Row from "react-bootstrap/Col";
+import Col from "react-bootstrap/Col";
+import { useNavigate, useParams, Link } from "react-router-dom";
+
 
 import AuthContext from "../authentication/AuthContext";
-import { collection, getDocs, updateDoc, doc,setDoc, serverTimestamp } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  updateDoc,
+  doc,
+  getDoc,
+  serverTimestamp,
+} from "firebase/firestore";
 
-import { db } from "../firebaseConfig/firebaseConfig"; //   "../firebaseConfig/firebaseConfig"
-import "./PetGrid.css";
-/*
+import { db } from "../firebaseConfig/firebaseConfig";
 
-Estados de la mascota:
-
-    10 = mascota en adopcion
-    20 = mascota con pedido de adopcion
-    500 = mascota adoptada  (luego de que el usuario creador acepte el pedido)
-    999 = mascota dada de baja (solo el usuario creador puede hacerlo siempre que no este adoptada)
-
-*/
-
-export const PetGrid = () => {
+export const Adoptantes = () => {
   const { userEmail } = useContext(AuthContext);
+  const { id } = useParams();
+  const [adoptants, setAdoptants] = useState([]);
+  const adoptantsCollection = collection(db, `pets/${id}/adoptants`);
+  const getAdoptants = useCallback(async () => {
+    const data = await getDocs(adoptantsCollection);
+    const allAdoptants = data.docs.map((doc) => ({
+      ...doc.data(),
+      id: doc.id,
+    }));
+    setAdoptants(allAdoptants);
+  }, [adoptantsCollection]);
 
-  //1 configurar useState (hook)
-  const [pets, setPets] = useState([]);
-  //2 referenciamos a la db de firestore
-  const petsCollection = collection(db, "pets");
-
-  //3 funcion para mostrar todos los docs
-  const getPets = useCallback(async () => {
-    const data = await getDocs(petsCollection);
-    const allPets = data.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
-
-    // Si el usuario está logueado, filtra sus publicaciones
-    if (userEmail) {
-      const filteredPets = allPets.filter((pet) => pet.usuario !== userEmail);
-      setPets(filteredPets);
-    } else {
-      const filteredPets = allPets.filter((pet) => pet.estado !== 999);
-      setPets(filteredPets);
+  //funcion para seleccionar el adoptante
+  const handleOnAdoptantClick = async (adoptante) => {
+    const pet = doc(db, "pets", id);
+    const petData = await getDoc(doc(db, "pets", id));
+    // si no está entregado se puede modificar el adoptante
+    if (userEmail === petData.data().usuario && petData.data().estado < 800) {
+      await updateDoc(pet, {
+        estado: 500,
+        adoptante: adoptante,
+        timestamp: serverTimestamp(),
+      }); //actualiza el estado a adoptado y agrega el campo del adoptante
     }
-  }, [petsCollection, userEmail]);
+    getAdoptants(); //actualiza el componente
+  };
 
-  //funcion para postularse para adoptar
-  const handleOnCardClick = async (idPet, estadoActual) => {
-    // crea una sub coleccion (adoptants) de pre-adoptantes
-    const adoptantRef = doc(collection(db, "pets", idPet, "adoptants"));
-    const adoptantDoc = await setDoc(adoptantRef, {
-      id: adoptantRef.id,
-      usuario: userEmail,
-      timestamp: serverTimestamp(),
-    });
-    const pet = doc(db, "pets", idPet);
-    await updateDoc(pet, { estado: 20, timestamp: serverTimestamp() }); //actualiza el estado a pre-adoptado
-    getPets(); //actualiza el componente
+  //funcion para mostrar los datos del adoptante
+  const handleOnDataClick = async (adoptante) => {
+    //todo
+    
+
+
+
   };
 
   useEffect(() => {
-    getPets();
+    getAdoptants();
   }, []);
 
   return (
     <>
       <div className="pet-grid d-flex flex-wrap justify-content-center">
-        {pets.map((pet) => (
-          <div key={pet.id} style={{ width: "fit-content", margin: "0.5em" }}>
-            <PetCard
-              imagenURL={pet.imagenURL}
-              nombre={pet.nombre}
-              tipo={pet.tipo}
-              tamaño={pet.tamaño}
-              sexo={pet.sexo}
-              peso={pet.peso}
-              usuario={pet.usuario}
-              petId={pet.id}
-              edadCantidad={pet.edadCantidad}
-              edadUnidad={pet.edadUnidad}
-              texto={pet.texto}
-              estado={pet.estado}
-              textoEstado={pet.estado < 500 ? "Te espera" : "Adoptada"}
-              textoBoton={pet.estado < 500 ? "Adoptar" : ""}
-              onCardClick={() => handleOnCardClick(pet.id, pet.estado)}
-            />
+      <ListGroup>
+            
+        {adoptants.map((adoptant) => (
+          <div key={adoptant.id}>
+              <ListGroupItem header="Email">
+                <Row>
+                  <Col >
+                    {adoptant.usuario}
+                  </Col>
+                  <Col>
+                    <Link className="nav-link" to={`/persona/${adoptant.usuario}`}>Datos del adoptante</Link>
+                  </Col>
+                  <Col>
+                    <Button
+                      variant="primary"
+                      onClick={() => handleOnAdoptantClick(adoptant.usuario)}>
+                      Seleccionar
+                    </Button>
+                  </Col>
+                </Row>
+            </ListGroupItem>
+            
           </div>
         ))}
+                </ListGroup>
+        
       </div>
     </>
   );
 };
 
-export default PetGrid;
+export default Adoptantes;
