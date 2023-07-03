@@ -14,8 +14,22 @@ export const Persona = () => {
             if (isLoggedIn) {
                 const q = query(collection(db, "personas"), where("user", "==", id));
                 const querySnapshot = await getDocs(q);
+                console.log(id);
                 if (!querySnapshot.empty) {
-                    console.log("Adoptante no encontrado");
+                    const docData = querySnapshot.docs[0];
+                    console.log(docData)
+                    //setDocId(docData.id);  // Store the document ID
+                    const data = docData.data();
+                    setNombre(data.nombre);
+                    setApellido(data.apellido);
+                    setDomicilio(data.domicilio);
+                    setLocalidad(data.localidad);
+                    setCodigoPostal(data.codigoPostal.toString());  // Convert back to string for the form
+                    setTipo(data.vivienda);
+                    setCondicion(data.condicion);
+                    setConvivientes(data.convivientes);
+                    setOtrasMascotas(data.otrasMascotas);
+                    setVacaciones(data.vacaciones);
                 }
             }
         }
@@ -38,8 +52,7 @@ export const Persona = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        window. history. back();
-        
+        window.history.back();
     };
 
     return (
@@ -49,7 +62,7 @@ export const Persona = () => {
                     <Form onSubmit={handleSubmit}>
                         <Form.Group controlId="formNombre" className="mt-3">
                             <Form.Label>Nombre *</Form.Label>
-                            <Form.Control type="text" value={nombre} />
+                            <Form.Control type="text" value={nombre} onChange={(e) => setNombre(e.target.value)} placeholder="Ejemplo: Bruce" required />
                         </Form.Group>
 
                         <Form.Group controlId="formApellido" className="mt-3">

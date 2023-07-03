@@ -3,9 +3,18 @@ import PetCard from "./PetCard";
 import { useState, useEffect, useContext, useCallback } from "react";
 
 import AuthContext from "../authentication/AuthContext";
-import { collection, getDocs, updateDoc, doc,setDoc, serverTimestamp } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  updateDoc,
+  doc,
+  setDoc,
+  serverTimestamp,
+  query,
+  where,
+} from "firebase/firestore";
 
-import { db } from "../firebaseConfig/firebaseConfig"; 
+import { db } from "../firebaseConfig/firebaseConfig";
 import "./PetGrid.css";
 /*
 
@@ -20,7 +29,7 @@ Estados de la mascota:
 */
 
 export const PetGrid = () => {
-  const { userEmail } = useContext(AuthContext);
+  const { isLoggedIn, userEmail } = useContext(AuthContext);
 
   //1 configurar useState (hook)
   const [pets, setPets] = useState([]);
@@ -34,7 +43,9 @@ export const PetGrid = () => {
 
     // Si el usuario está logueado, filtra sus publicaciones
     if (userEmail) {
-      const filteredPets = allPets.filter((pet) => pet.usuario !== userEmail && pet.estado < 500);
+      const filteredPets = allPets.filter(
+        (pet) => pet.usuario !== userEmail && pet.estado < 500
+      );
       setPets(filteredPets);
     } else {
       const filteredPets = allPets.filter((pet) => pet.estado < 500);
@@ -42,18 +53,30 @@ export const PetGrid = () => {
     }
   }, [petsCollection, userEmail]);
 
+  //funcion para verificar que el adoptante haya completado los datos
+  const datosCargados = async () => {
+    if (isLoggedIn) {
+      const q = query(collection(db, "personas"), where("user", "==", userEmail));
+      const querySnapshot = await getDocs(q);
+      console.log(userEmail);
+      return (!querySnapshot.empty) 
+    }
+  };
+  
   //funcion para postularse para adoptar
   const handleOnCardClick = async (idPet, estadoActual) => {
     // crea una sub coleccion (adoptants) de pre-adoptantes
-    const adoptantRef = doc(collection(db, "pets", idPet, "adoptants"));
-    await setDoc(adoptantRef, {
-      id: adoptantRef.id,
-      usuario: userEmail,
-      timestamp: serverTimestamp(),
-    });
-    const pet = doc(db, "pets", idPet);
-    await updateDoc(pet, { estado: 20, timestamp: serverTimestamp() }); //actualiza el estado a pre-adoptado
-    getPets(); //actualiza el componente
+    if ((estadoActual < 500) && datosCargados) {
+      const adoptantRef = doc(collection(db, "pets", idPet, "adoptants"));
+      await setDoc(adoptantRef, {
+        id: adoptantRef.id,
+        usuario: userEmail,
+        timestamp: serverTimestamp(),
+      });
+      const pet = doc(db, "pets", idPet);
+      await updateDoc(pet, { estado: 20, timestamp: serverTimestamp() }); //actualiza el estado a pre-adoptado
+      getPets(); //actualiza el componente
+    }
   };
 
   useEffect(() => {
