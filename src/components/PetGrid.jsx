@@ -34,7 +34,7 @@ export const PetGrid = () => {
 
     // Si el usuario está logueado, filtra sus publicaciones
     if (userEmail) {
-      const filteredPets = allPets.filter((pet) => pet.usuario !== userEmail);
+      const filteredPets = allPets.filter((pet) => pet.usuario !== userEmail && pet.estado < 500);
       setPets(filteredPets);
     } else {
       const filteredPets = allPets.filter((pet) => pet.estado < 500);
