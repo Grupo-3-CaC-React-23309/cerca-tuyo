@@ -30,7 +30,8 @@ Estados de la mascota:
 
 export const PetGrid = () => {
   const { isLoggedIn, userEmail } = useContext(AuthContext);
-
+  const [datosCargados, setDatosCargados] = useState(false);
+  
   //1 configurar useState (hook)
   const [pets, setPets] = useState([]);
   //2 referenciamos a la db de firestore
@@ -54,15 +55,17 @@ export const PetGrid = () => {
   }, [petsCollection, userEmail]);
 
   //funcion para verificar que el adoptante haya completado los datos
-  const datosCargados = async () => {
+  const checkIfDataExists = async () => {
     if (isLoggedIn) {
       const q = query(collection(db, "personas"), where("user", "==", userEmail));
       const querySnapshot = await getDocs(q);
       console.log(userEmail);
-      return (!querySnapshot.empty) 
+      console.log(!querySnapshot.empty) 
+      setDatosCargados(!querySnapshot.empty) 
     }
   };
   
+
   //funcion para postularse para adoptar
   const handleOnCardClick = async (idPet, estadoActual) => {
     // crea una sub coleccion (adoptants) de pre-adoptantes
@@ -77,10 +80,15 @@ export const PetGrid = () => {
       await updateDoc(pet, { estado: 20, timestamp: serverTimestamp() }); //actualiza el estado a pre-adoptado
       getPets(); //actualiza el componente
     }
+    else
+    {
+      alert("Debes completar tus datos para poder adoptar");
+    }
   };
 
   useEffect(() => {
     getPets();
+    checkIfDataExists();
   }, []);
 
   return (
