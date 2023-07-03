@@ -2,71 +2,86 @@ import PetCard from "./PetCard";
 
 import { useState, useEffect, useContext, useCallback } from "react";
 
-import AuthContext from '../authentication/AuthContext';
-import { collection, getDocs, updateDoc, doc } from "firebase/firestore";
+import AuthContext from "../authentication/AuthContext";
+import { collection, getDocs, updateDoc, doc,setDoc, serverTimestamp } from "firebase/firestore";
 
-import { db } from '../firebaseConfig/firebaseConfig' //   "../firebaseConfig/firebaseConfig"
-import './PetGrid.css'
+import { db } from "../firebaseConfig/firebaseConfig"; //   "../firebaseConfig/firebaseConfig"
+import "./PetGrid.css";
+/*
 
-//import { ThemeConsumer } from "react-bootstrap/esm/ThemeProvider";
+Estados de la mascota:
 
+    10 = mascota en adopcion
+    20 = mascota con pedido de adopcion
+    500 = mascota adoptada  (luego de que el usuario creador acepte el pedido)
+    999 = mascota dada de baja (solo el usuario creador puede hacerlo siempre que no este adoptada)
 
-//import Swal from "sweetalert2"
-//import whitReactContent from "sweetalert2-react-content"
-//const mySwal = whitReactContent (Swal)
+*/
 
 export const PetGrid = () => {
   const { userEmail } = useContext(AuthContext);
-  
+
+  //1 configurar useState (hook)
   const [pets, setPets] = useState([]);
+  //2 referenciamos a la db de firestore
   const petsCollection = collection(db, "pets");
+
+  //3 funcion para mostrar todos los docs
   const getPets = useCallback(async () => {
     const data = await getDocs(petsCollection);
     const allPets = data.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
 
     // Si el usuario está logueado, filtra sus publicaciones
     if (userEmail) {
-      const filteredPets = allPets.filter(pet => pet.usuario !== userEmail);
+      const filteredPets = allPets.filter((pet) => pet.usuario !== userEmail);
       setPets(filteredPets);
     } else {
       setPets(allPets);
     }
   }, [petsCollection, userEmail]);
 
-  const handleOnCardClick = async (id, estadoActual) => {
-    const pet = doc(db, "pets", id);
-    await updateDoc(pet, { estado: !estadoActual });
-    getPets();    //actualiza el componente   
+  //funcion para postularse para adoptar
+  const handleOnCardClick = async (idPet, estadoActual) => {
+    // crea una sub coleccion (adoptants) de pre-adoptantes
+    const adoptantRef = doc(collection(db, "pets", idPet, "adoptants"));
+    const adoptantDoc = await setDoc(adoptantRef, {
+      id: adoptantRef.id,
+      usuario: userEmail,
+      timestamp: serverTimestamp(),
+    });
+    const pet = doc(db, "pets", idPet);
+    await updateDoc(pet, { estado: 20, timestamp: serverTimestamp() }); //actualiza el estado a pre-adoptado
+    getPets(); //actualiza el componente
   };
 
   useEffect(() => {
     getPets();
   }, []);
 
-
   return (
     <>
       <div className="pet-grid d-flex flex-wrap justify-content-center">
         {pets.map((pet) => (
-          <div key={pet.id} style={{ width: 'fit-content', margin: '0.5em' }}>
+          <div key={pet.id} style={{ width: "fit-content", margin: "0.5em" }}>
             <PetCard
               imagenURL={pet.imagenURL}
               nombre={pet.nombre}
               tipo={pet.tipo}
               tamaño={pet.tamaño}
               sexo={pet.sexo}
-              peso={pet.peso} 
+              peso={pet.peso}
+              usuario={pet.usuario}
+              petId={pet.id}
               edadCantidad={pet.edadCantidad}
               edadUnidad={pet.edadUnidad}
               texto={pet.texto}
-              textoEstado={pet.estado ? "Adoptado" : "Te espera"}
-              textoBoton={pet.estado ? "Abandonar" : "Adoptar"}
+              textoEstado={pet.estado < 500 ? "Te espera" : "Adoptada"}
+              textoBoton={pet.estado < 500 ? "Adoptar" : ""}
               onCardClick={() => handleOnCardClick(pet.id, pet.estado)}
             />
           </div>
         ))}
       </div>
-
     </>
   );
 };

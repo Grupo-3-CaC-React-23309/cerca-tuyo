@@ -23,7 +23,8 @@ export const Register = ({ darkMode }) => {
         createUserWithEmailAndPassword(auth, username, password)
         .then((userCredential) => {
             // El usuario se ha registrado y está logueado
-            authContext.onLogin();
+            const userEmail = userCredential.user.email; // Get the user's email
+            authContext.onLogin(userEmail);
             navigate('/');
         })
         .catch((error) => {
@@ -59,7 +60,5 @@ export const Register = ({ darkMode }) => {
         </div>
     );
 };
-
-
 
 export default Register;
