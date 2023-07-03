@@ -87,12 +87,13 @@ export const MisPublicaciones = () => {
               texto={pet.texto}
               usuario={pet.usuario}
               petId={pet.id}
+              estado={pet.estado}
               textoEstado={
                 pet.estado < 20
                   ? "Podes Editar y/o Eliminar"
-                  : "Tiene pedidos de adopcion"
+                  : pet.estado <500 ? "Tiene pedidos de adopcion":"Eliminado"
               }
-              textoBoton={pet.estado < 20 ? "Editar" : "Seleccionar"} //dentro de MisPublicaciones solo se puede editar, NO adoptar
+              textoBoton={pet.estado < 20 ? "Editar" : pet.estado <500 ? "Seleccionar":"Eliminado"} //dentro de MisPublicaciones solo se puede editar, NO adoptar
               onCardClick={() => handleOnCardClick(pet.id, pet.estado)}
               onDeleteClick={() => handleOnDeleteClick(pet.id)}
             />

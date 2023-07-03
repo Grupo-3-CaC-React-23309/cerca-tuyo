@@ -22,6 +22,7 @@ export const PetCard = ({
   imagenURL,
   usuario,
   textoBoton,
+  estado,
   onCardClick,
   onDeleteClick,
 }) => {
@@ -182,7 +183,7 @@ export const PetCard = ({
               >
                 {preAdoptado ? "Ya te postulaste" : textoBoton}
               </Button>
-              {((userEmail === usuario) && (!preAdoptado)) &&  (
+              {((userEmail === usuario) && (!preAdoptado) && (estado !== 999)) &&  (
                 <Button
                   variant="danger"
                   onClick={deleteClose}

@@ -36,7 +36,8 @@ export const PetGrid = () => {
       const filteredPets = allPets.filter((pet) => pet.usuario !== userEmail);
       setPets(filteredPets);
     } else {
-      setPets(allPets);
+      const filteredPets = allPets.filter((pet) => pet.estado !== 999);
+      setPets(filteredPets);
     }
   }, [petsCollection, userEmail]);
 
@@ -75,6 +76,7 @@ export const PetGrid = () => {
               edadCantidad={pet.edadCantidad}
               edadUnidad={pet.edadUnidad}
               texto={pet.texto}
+              estado={pet.estado}
               textoEstado={pet.estado < 500 ? "Te espera" : "Adoptada"}
               textoBoton={pet.estado < 500 ? "Adoptar" : ""}
               onCardClick={() => handleOnCardClick(pet.id, pet.estado)}
