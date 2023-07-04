@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 import AuthContext from '../authentication/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { auth, signOut } from '../firebaseConfig/firebaseConfig'
-
+import "./Logout.css"
 // '../firebaseConfig/firebaseConfig';
 
 export const Logout = () => {
@@ -27,10 +27,10 @@ export const Logout = () => {
     };
 
     return (
-        <div>
-            <h2>Logout</h2>
+        <div className='container log mt-3' >
+            <h2 className='mt-3'>¿Deseas cerrar sesion?</h2>
             {error && <p>{error}</p>}
-            <button onClick={handleLogout}>Cerrar sesión</button>
+            <button className='btn btn-secondary mt-3 mb-3' onClick={handleLogout}>Cerrar sesión</button>
         </div>
     );
 };
