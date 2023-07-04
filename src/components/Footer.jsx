@@ -18,7 +18,7 @@ export const Footer = ({ darkMode }) => {
         </div>
         <div className="col-md-4">
           <h5>Redes Sociales</h5>
-          <ul className="list-unstyled justify-content-between">
+          <ul className="list-unstyled social-icons">
             <li><Link className="fa-brands fa-square-facebook fa-lg" to="#"></Link></li>
             <li><Link className="fa-brands fa-square-twitter fa-lg" to="#"></Link></li>
             <li><Link className="fa-brands fa-instagram fa-lg" to="#"></Link></li>
