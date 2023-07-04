@@ -23,9 +23,19 @@ export const Adoptantes = () => {
   const { userEmail } = useContext(AuthContext);
   const { id } = useParams();
   const [adoptants, setAdoptants] = useState([]);
+
   const [adoptanteSeleccionado, setAdoptanteSeleccionado] = useState("");
-  
+
   const adoptantsCollection = collection(db, `pets/${id}/adoptants`);
+
+  // al poder modificar el adoptante antes de entregar la mascota se necesita una
+  //funcion para obtener el adoptante
+  const getAdoptante = async () => {
+    const pet = doc(db, "pets", id);
+    const petData = await getDoc(doc(db, "pets", id));
+    setAdoptanteSeleccionado(petData.data().adoptante);
+  };
+
   const getAdoptants = useCallback(async () => {
     const data = await getDocs(adoptantsCollection);
     const allAdoptants = data.docs.map((doc) => ({
@@ -51,18 +61,23 @@ export const Adoptantes = () => {
     getAdoptants(); //actualiza el componente
   };
 
+  
   useEffect(() => {
     getAdoptants();
+    getAdoptante();
   }, []);
 
   return (
     <>
-        <div className="pet-grid d-flex flex-wrap justify-content-center">
-          <Container>
+      <div className="pet-grid d-flex flex-wrap justify-content-center">
+        <Container>
           <ListGroup>
             {adoptants.map((adoptant) => (
               <div key={adoptant.id}>
-                <ListGroupItem header="Email">{(adoptant.usuario===adoptanteSeleccionado)?"Seleccionado":"No seleccionado"}
+                <ListGroupItem header="Email">
+                  {adoptant.usuario === adoptanteSeleccionado
+                    ? "Seleccionado"
+                    : "No seleccionado"}
                   <Row>
                     <Col>{adoptant.usuario}</Col>
                     <Col>
@@ -87,7 +102,7 @@ export const Adoptantes = () => {
             ))}
           </ListGroup>
         </Container>
-        </div>
+      </div>
     </>
   );
 };
