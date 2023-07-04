@@ -12,7 +12,6 @@ import {
   where,
   getDoc,
   updateDoc,
-  deleteDoc,
   doc,
   serverTimestamp,
 } from "firebase/firestore";
@@ -35,7 +34,7 @@ export const MisPublicaciones = () => {
     setPets(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
   }, [petsCollection]);
 
-  const handleOnCardClick = async (id, estadoActual) => {
+  const handleOnCardClick = async (id) => {
     const pet = doc(db, "pets", id);
     const petData = await getDoc(doc(db, "pets", id));
 
@@ -43,28 +42,16 @@ export const MisPublicaciones = () => {
       navigate(`/editar/${pet.id}`);
     } else {
       //tiene pedidos de adopcion
-      console.log("Seleccion del adoptante");
-      //TO DO
-      //
-      //
-      //
       navigate(`/adoptantes/${pet.id}`);
-
-      //getPets(); //para actualizar la vista
     }
   };
 
   const handleOnDeleteClick = async (id) => {
     const pet = doc(db, "pets", id);
     const petData = await getDoc(doc(db, "pets", id));
-    console.log(userEmail);
-    console.log(petData.data().usuario);
-    console.log(petData.data().estado);
-    console.log(petData.data().usuario && petData.data().estado < 20);
-
+    
     if (userEmail === petData.data().usuario && petData.data().estado < 20) {
-      await updateDoc(pet, { estado: 999, timestamp: serverTimestamp() }); //actualiza el estado a pre-adoptado
-
+      await updateDoc(pet, { estado: 999, timestamp: serverTimestamp() }); //actualiza el estado a eliminado
       getPets(); //para actualizar la vista
     }
   };
@@ -106,7 +93,7 @@ export const MisPublicaciones = () => {
                 pet.estado < 20
                   ? "Editar"
                   : pet.estado < 800
-                  ? "Seleccionar"
+                  ? "Seleccionar adoptante"
                   : "No se puede modificar"
                                     
               } //dentro de MisPublicaciones solo se puede editar, NO adoptar

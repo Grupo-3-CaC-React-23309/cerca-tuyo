@@ -1,13 +1,10 @@
-import Persona from "./Persona";
-
 import { useState, useEffect, useContext, useCallback } from "react";
 import Button from "react-bootstrap/Button";
 import ListGroup from "react-bootstrap/ListGroup";
 import ListGroupItem from "react-bootstrap/ListGroupItem";
 import Row from "react-bootstrap/Col";
 import Col from "react-bootstrap/Col";
-import { useNavigate, useParams, Link } from "react-router-dom";
-
+import { useParams, Link } from "react-router-dom";
 
 import AuthContext from "../authentication/AuthContext";
 import {
@@ -20,6 +17,7 @@ import {
 } from "firebase/firestore";
 
 import { db } from "../firebaseConfig/firebaseConfig";
+import { Container } from "react-bootstrap";
 
 export const Adoptantes = () => {
   const { userEmail } = useContext(AuthContext);
@@ -50,49 +48,41 @@ export const Adoptantes = () => {
     getAdoptants(); //actualiza el componente
   };
 
-  //funcion para mostrar los datos del adoptante
-  const handleOnDataClick = async (adoptante) => {
-    //todo
-    
-
-
-
-  };
-
   useEffect(() => {
     getAdoptants();
   }, []);
 
   return (
     <>
-      <div className="pet-grid d-flex flex-wrap justify-content-center">
-      <ListGroup>
-            
-        {adoptants.map((adoptant) => (
-          <div key={adoptant.id}>
-              <ListGroupItem header="Email">
-                <Row>
-                  <Col >
-                    {adoptant.usuario}
-                  </Col>
-                  <Col>
-                    <Link className="nav-link" to={`/persona/${adoptant.usuario}`}>Datos del adoptante</Link>
-                  </Col>
-                  <Col>
-                    <Button
-                      variant="primary"
-                      onClick={() => handleOnAdoptantClick(adoptant.usuario)}>
-                      Seleccionar
-                    </Button>
-                  </Col>
-                </Row>
-            </ListGroupItem>
-            
-          </div>
-        ))}
-                </ListGroup>
-        
-      </div>
+        <Container>
+          <ListGroup>
+            {adoptants.map((adoptant) => (
+              <div key={adoptant.id}>
+                <ListGroupItem header="Email">
+                  <Row>
+                    <Col>{adoptant.usuario}</Col>
+                    <Col>
+                      <Link
+                        className="nav-link"
+                        to={`/persona/${adoptant.usuario}`}
+                      >
+                        Datos del adoptante
+                      </Link>
+                    </Col>
+                    <Col>
+                      <Button
+                        variant="primary"
+                        onClick={() => handleOnAdoptantClick(adoptant.usuario)}
+                      >
+                        Seleccionar adoptante
+                      </Button>
+                    </Col>
+                  </Row>
+                </ListGroupItem>
+              </div>
+            ))}
+          </ListGroup>
+        </Container>
     </>
   );
 };
