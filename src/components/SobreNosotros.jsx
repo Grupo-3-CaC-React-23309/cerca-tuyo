@@ -5,7 +5,7 @@ export const SobreNosotros = ()=>{
         <div className="container">
         <h2 className="mt-4 mb-4 mx-auto text-center">Sobre Nosotros</h2>
         <div className="row">
-          <div className="col-md-6 mb-4">
+          <div className="col-md-6 mt-3 mb-4">
             <img src="https://w0.peakpx.com/wallpaper/977/291/HD-wallpaper-aussie-family-australian-shepherd-running-dogs-pets-dogs-australian-shepherd-dog-aussie-dog.jpg" alt="Company" className="img-fluid" />
           </div>
           <div className="col-md-5 mb-4 mt-3">
@@ -18,7 +18,7 @@ export const SobreNosotros = ()=>{
             <h4>Nuestra Visión</h4>
             <p className="mt-4">Nuestra visión es poder brindar satisfactoriamente dicho servicio, sin ningún tipo de contraprestación, a lo largo de los años con un alcance Nacional. </p>
           </div>
-          <div className="col-md-6 mb-4">
+          <div className="col-md-6 mt-3 mb-4">
             <img src="https://img.freepik.com/fotos-premium/ninos-aprenden-cuidar-amar-duenos-mascotas_290431-26729.jpg" alt="Company" className="img-fluid" />
           </div>
         </div>
