@@ -45,7 +45,7 @@ export const Crear = () => {
                 peso: numericalPeso, // store it as a number
                 texto,
                 imagenURL,
-                estado: false,
+                estado: 10,
                 edadCantidad, 
                 edadUnidad,            // store it properly formatted or as null
                 usuario,
