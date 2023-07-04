@@ -2,8 +2,9 @@ import { useState, useEffect, useContext, useCallback } from "react";
 import Button from "react-bootstrap/Button";
 import ListGroup from "react-bootstrap/ListGroup";
 import ListGroupItem from "react-bootstrap/ListGroupItem";
-import Row from "react-bootstrap/Col";
+import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import Container from "react-bootstrap/Container";
 import { useParams, Link } from "react-router-dom";
 
 import AuthContext from "../authentication/AuthContext";
@@ -17,12 +18,13 @@ import {
 } from "firebase/firestore";
 
 import { db } from "../firebaseConfig/firebaseConfig";
-import { Container } from "react-bootstrap";
 
 export const Adoptantes = () => {
   const { userEmail } = useContext(AuthContext);
   const { id } = useParams();
   const [adoptants, setAdoptants] = useState([]);
+  const [adoptanteSeleccionado, setAdoptanteSeleccionado] = useState("");
+  
   const adoptantsCollection = collection(db, `pets/${id}/adoptants`);
   const getAdoptants = useCallback(async () => {
     const data = await getDocs(adoptantsCollection);
@@ -45,6 +47,7 @@ export const Adoptantes = () => {
         timestamp: serverTimestamp(),
       }); //actualiza el estado a adoptado y agrega el campo del adoptante
     }
+    setAdoptanteSeleccionado(adoptante);
     getAdoptants(); //actualiza el componente
   };
 
@@ -54,11 +57,12 @@ export const Adoptantes = () => {
 
   return (
     <>
-        <Container>
+        <div className="pet-grid d-flex flex-wrap justify-content-center">
+          <Container>
           <ListGroup>
             {adoptants.map((adoptant) => (
               <div key={adoptant.id}>
-                <ListGroupItem header="Email">
+                <ListGroupItem header="Email">{(adoptant.usuario===adoptanteSeleccionado)?"Seleccionado":"No seleccionado"}
                   <Row>
                     <Col>{adoptant.usuario}</Col>
                     <Col>
@@ -83,6 +87,7 @@ export const Adoptantes = () => {
             ))}
           </ListGroup>
         </Container>
+        </div>
     </>
   );
 };
