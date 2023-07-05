@@ -1,18 +1,20 @@
 import React, { useContext } from 'react';
-// Importación de los componentes necesarios de react-router-bootstrap y react-bootstrap.
+
 import { LinkContainer } from 'react-router-bootstrap';
 import { Dropdown, Navbar, Nav, Container } from 'react-bootstrap';
-// Importamos el contexto de autenticación para usar el estado del usuario en la barra de navegación.
+
 import AuthContext from '../authentication/AuthContext';
 
-// Importamos los íconos que vamos a usar en el modo oscuro/botón de luz.
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMoon, faSun } from '@fortawesome/free-solid-svg-icons';
-// Importamos el hook useLocation de react-router-dom para determinar la página activa actual.
-import { useLocation } from 'react-router-dom';
 
-// Importamos nuestros estilos personalizados para la barra de navegación.
+import { useLocation, Link } from 'react-router-dom';
+
 import './NavBar.css'
+import logoDark from '../images/logoDark.png';
+import logoLight from '../images/logoLight.png';
+
 
 export const NavBar = ({ toggleDarkMode, darkMode }) => {
     // Tomamos el estado de autenticación del usuario del AuthContext.
@@ -25,7 +27,15 @@ export const NavBar = ({ toggleDarkMode, darkMode }) => {
         <Navbar expand="lg" className={`navbar ${darkMode ? 'dark-mode' : ''}`}>
             <Container fluid>
                 <LinkContainer to="/">
-                    <Navbar.Brand>Cerca Tuyo</Navbar.Brand>
+                    <Navbar.Brand>
+                        <img
+                            src={darkMode ? logoDark : logoLight}
+                            width="30"
+                            height="30"
+                            className="d-inline-block align-top"
+                            alt="Logo"
+                        />
+                        {' '}Cerca Tuyo</Navbar.Brand>
                 </LinkContainer>
                 <Navbar.Toggle aria-controls="navbarNav" />
                 <Navbar.Collapse id="navbarNav">
@@ -58,7 +68,7 @@ export const NavBar = ({ toggleDarkMode, darkMode }) => {
                                         {userEmail}
                                     </Dropdown.Toggle>
                                     <Dropdown.Menu>
-                                        <Dropdown.Item href="/logout">Cerrar Sesión</Dropdown.Item>
+                                        <Dropdown.Item><Link to="/logout">Cerrar Sesión</Link></Dropdown.Item>
                                     </Dropdown.Menu>
                                 </Dropdown>
                             </Nav.Item>

@@ -37,9 +37,6 @@ export const PetCard = ({
         where("usuario", "==", Usuario)
       );
       const querySnapshot = await getDocs(q);
-      //console.log(`pets/${PetId}/adoptants`);
-      //console.log(Usuario);
-      //console.log(!querySnapshot.empty);
       setPreAdoptado(!querySnapshot.empty);
     }
   };
@@ -58,8 +55,8 @@ export const PetCard = ({
     handleClose();
     onDeleteClick();
   };
-    
-  isPreAdoptado(petId,userEmail);
+
+  isPreAdoptado(petId, userEmail);
 
   return (
     <>
@@ -148,7 +145,7 @@ export const PetCard = ({
             <OverlayTrigger
               overlay={
                 <Tooltip id="tooltip-disabled">
-                  'Por favor inicia sesión'
+                  Por favor inicia sesión
                 </Tooltip>
               }
             >
@@ -183,11 +180,11 @@ export const PetCard = ({
               >
                 {preAdoptado ? "Ya te postulaste" : textoBoton}
               </Button>
-              {((userEmail === usuario) && (estado < 20)) &&  (
+              {((userEmail === usuario) && (estado < 20)) && (
                 <Button
                   variant="danger"
                   onClick={deleteClose}
-                  disabled = {preAdoptado}
+                  disabled={preAdoptado}
                   style={{ pointerEvents: !isLoggedIn ? "none" : "auto" }}
                 >
                   Eliminar

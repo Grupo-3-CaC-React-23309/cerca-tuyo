@@ -33,10 +33,6 @@ export const Crear = () => {
             // Ensure the weight is a number
             const numericalPeso = peso ? parseFloat(peso) : null;
 
-            // Ensure age is properly formatted
-            //const edad = edadCantidad && edadUnidad ? `${edadCantidad} ${edadUnidad}` : null;
-            //const edad = edadCantidad && edadUnidad ? `${edadCantidad} ${edadUnidad}` : null;
-
             await addDoc(petsCollection, {
                 nombre,
                 tipo: tipo === "Otro" ? otroTipo : tipo,
@@ -47,7 +43,7 @@ export const Crear = () => {
                 imagenURL,
                 estado: 10,
                 edadCantidad, 
-                edadUnidad,            // store it properly formatted or as null
+                edadUnidad, // store it properly formatted or as null
                 usuario,
             });
 
@@ -66,8 +62,6 @@ export const Crear = () => {
             alert("Por favor inicia sesión para agregar una mascota");
         }
     };
-
-
 
     return (
         <Container className="mt-5">

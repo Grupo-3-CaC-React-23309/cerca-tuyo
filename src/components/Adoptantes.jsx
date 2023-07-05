@@ -78,9 +78,20 @@ export const Adoptantes = () => {
     getAdoptants(); //actualiza el componente
   };
 
-  const handleOnRevertSelectionClick = () => {
+  const handleOnRevertSelectionClick = async () => {
+    const pet = doc(db, "pets", id);
+    const petData = await getDoc(doc(db, "pets", id));
+    // si no está entregado se puede modificar el adoptante
+    if (userEmail === petData.data().usuario && petData.data().estado < 800) {
+      await updateDoc(pet, {
+        estado: 10, // actualiza el estado a en adopción
+        adoptante: "", // quita el adoptante
+        timestamp: serverTimestamp(),
+      }); 
+    }
     setAdoptanteSeleccionado("");
     setIsAdoptantSelected(false);
+    getAdoptants(); //actualiza el componente
   };
 
   const handleShowMoreInfo = async (adoptant) => {
