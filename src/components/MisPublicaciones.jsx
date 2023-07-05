@@ -12,6 +12,7 @@ import {
   where,
   getDoc,
   updateDoc,
+  deleteDoc,
   doc,
   serverTimestamp,
 } from "firebase/firestore";
@@ -51,7 +52,10 @@ export const MisPublicaciones = () => {
     const petData = await getDoc(doc(db, "pets", id));
     
     if (userEmail === petData.data().usuario && petData.data().estado < 20) {
-      await updateDoc(pet, { estado: 999, timestamp: serverTimestamp() }); //actualiza el estado a eliminado
+
+      
+      //await updateDoc(pet, { estado: 999, timestamp: serverTimestamp() }); //actualiza el estado a eliminado
+      await deleteDoc(pet);//, { estado: 999, timestamp: serverTimestamp() }); //actualiza el estado a eliminado
       getPets(); //para actualizar la vista
     }
   };
