@@ -7,7 +7,7 @@ import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
 import Modal from "react-bootstrap/Modal";
 
-import { useParams, Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 import AuthContext from "../authentication/AuthContext";
 import {
@@ -16,12 +16,14 @@ import {
   updateDoc,
   doc,
   getDoc,
-  serverTimestamp, query, where
+  serverTimestamp,
+  query,
+  where,
 } from "firebase/firestore";
 
 import { db } from "../firebaseConfig/firebaseConfig";
 
-import "./Adoptantes.css"
+import "./Adoptantes.css";
 
 export const Adoptantes = () => {
   // Utiliza los hooks useContext, useState y useParams para acceder a la información de usuario, estado de la aplicación y parámetros de ruta, respectivamente
@@ -30,6 +32,7 @@ export const Adoptantes = () => {
   const [adoptants, setAdoptants] = useState([]);
   const [adoptanteSeleccionado, setAdoptanteSeleccionado] = useState("");
   const [isAdoptantSelected, setIsAdoptantSelected] = useState(false);
+  const [isDelivered, setIsDelivered] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [selectedAdoptant, setSelectedAdoptant] = useState(null);
   const [detailedAdoptant, setDetailedAdoptant] = useState(null);
@@ -46,6 +49,11 @@ export const Adoptantes = () => {
     if (adoptante) {
       setIsAdoptantSelected(true);
     }
+    // Si ya esta entregada la mascota
+    if (petData.data().estado===800) {
+      setIsDelivered(true);
+    }
+    
   };
 
   const getAdoptants = useCallback(async () => {
@@ -76,6 +84,27 @@ export const Adoptantes = () => {
     getAdoptants(); //actualiza el componente
   };
 
+  //funcion para entregar la mascota
+  const handleOnDeliveredClick = async (adoptante) => {
+    const pet = doc(db, "pets", id);
+    const petData = await getDoc(doc(db, "pets", id));
+    // si no está entregado se puede modificar el adoptante
+    if (
+      userEmail === petData.data().usuario &&
+      petData.data().estado === 500 &&
+      petData.data().adoptante === adoptante
+    ) {
+      await updateDoc(pet, {
+        estado: 800, //actualiza el estado a entregado
+        timestamp: serverTimestamp(),
+      });
+    }
+    setAdoptanteSeleccionado(adoptante);
+    setIsAdoptantSelected(true);
+    setIsDelivered(true);
+    getAdoptants(); //actualiza el componente
+  };
+
   const handleOnRevertSelectionClick = async () => {
     const pet = doc(db, "pets", id);
     const petData = await getDoc(doc(db, "pets", id));
@@ -101,10 +130,10 @@ export const Adoptantes = () => {
     const petData = await getDoc(doc(db, "pets", id));
     if (userEmail === petData.data().usuario && petData.data().estado < 800) {
       await updateDoc(pet, {
-        estado: 10, // actualiza el estado a en adopción
+        estado: 20, // actualiza el estado a: en adopción con pedidos
         adoptante: "", // quita el adoptante
         timestamp: serverTimestamp(),
-      }); 
+      });
     }
     setAdoptanteSeleccionado("");
     setIsAdoptantSelected(false);
@@ -114,7 +143,7 @@ export const Adoptantes = () => {
 
   const handleShowMoreInfo = async (adoptant) => {
     setSelectedAdoptant(adoptant);
-    await getUserData(adoptant.usuario);  // Get additional data
+    await getUserData(adoptant.usuario); // Get additional data
     setShowModal(true);
   };
 
@@ -130,7 +159,6 @@ export const Adoptantes = () => {
     }
   };
 
-
   useEffect(() => {
     getAdoptants();
     getAdoptante();
@@ -140,7 +168,8 @@ export const Adoptantes = () => {
     <>
       <div className="pet-grid d-flex flex-wrap justify-content-center">
         <Container>
-          <Button className="mb-3"
+          <Button
+            className="mb-3"
             variant="warning"
             onClick={handleOnRejectAllClick}
             disabled={isAdoptantSelected}
@@ -151,9 +180,11 @@ export const Adoptantes = () => {
             {adoptants.map((adoptant) => (
               <div key={adoptant.id}>
                 <ListGroupItem header="Email">
-                  {adoptant.usuario === adoptanteSeleccionado
-                    ? <span className="selected-text">Seleccionado</span>
-                    : <span className="not-selected-text">No Seleccionado</span>}
+                  {adoptant.usuario === adoptanteSeleccionado ? (
+                    <span className="selected-text">Seleccionado</span>
+                  ) : (
+                    <span className="not-selected-text">No Seleccionado</span>
+                  )}
                   <Row>
                     <Col>{adoptant.usuario}</Col>
                     <Col>
@@ -165,21 +196,36 @@ export const Adoptantes = () => {
                       </Button>
                     </Col>
                     <Col>
-                      {adoptant.usuario === adoptanteSeleccionado ?
-                        <Button
-                          variant="danger"
-                          onClick={handleOnRevertSelectionClick}
-                          disabled={!isAdoptantSelected}
-                        >
-                          Revertir selección
-                        </Button> :
+                      {!isDelivered ? (adoptant.usuario === adoptanteSeleccionado ? (
+                        <>
+                          <Button
+                            variant="danger"
+                            onClick={handleOnRevertSelectionClick}
+                            disabled={!isAdoptantSelected}
+                          >
+                            Revertir selección
+                          </Button>
+                          <Button
+                            variant="primary"
+                            onClick={() =>
+                              handleOnDeliveredClick(adoptant.usuario)
+                            }
+                            disabled={!isAdoptantSelected}
+                          >
+                            Entregado
+                          </Button>
+                        </>
+                      ) : (
                         <Button
                           variant="primary"
-                          onClick={() => handleOnAdoptantClick(adoptant.usuario)}
+                          onClick={() =>
+                            handleOnAdoptantClick(adoptant.usuario)
+                          }
                           disabled={isAdoptantSelected}
                         >
                           Seleccionar adoptante
-                        </Button>}
+                        </Button>
+                      )):("Entregado")}
                     </Col>
                   </Row>
                 </ListGroupItem>
@@ -216,15 +262,24 @@ export const Adoptantes = () => {
           </Button>
         </Modal.Footer>
       </Modal>
-      <Modal show={showRejectAllModal} onHide={() => setShowRejectAllModal(false)}>
+      <Modal
+        show={showRejectAllModal}
+        onHide={() => setShowRejectAllModal(false)}
+      >
         <Modal.Header closeButton>
           <Modal.Title>Confirmación</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <p>¿Estás seguro de que deseas descartar a todos los adoptantes y poner la mascota de nuevo en adopción?</p>
+          <p>
+            ¿Estás seguro de que deseas descartar a todos los adoptantes y poner
+            la mascota de nuevo en adopción?
+          </p>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowRejectAllModal(false)}>
+          <Button
+            variant="secondary"
+            onClick={() => setShowRejectAllModal(false)}
+          >
             Cancelar
           </Button>
           <Button variant="warning" onClick={handleRejectAllConfirm}>
