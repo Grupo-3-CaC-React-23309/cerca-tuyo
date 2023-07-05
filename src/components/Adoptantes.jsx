@@ -34,8 +34,6 @@ export const Adoptantes = () => {
   const [selectedAdoptant, setSelectedAdoptant] = useState(null);
   const [detailedAdoptant, setDetailedAdoptant] = useState(null);
 
-
-
   const adoptantsCollection = collection(db, `pets/${id}/adoptants`);
 
   // Define una función asíncrona que recupera la información del adoptante de la mascota actual
@@ -81,7 +79,26 @@ export const Adoptantes = () => {
   const handleOnRevertSelectionClick = async () => {
     const pet = doc(db, "pets", id);
     const petData = await getDoc(doc(db, "pets", id));
-    // si no está entregado se puede modificar el adoptante
+    if (userEmail === petData.data().usuario && petData.data().estado < 800) {
+      await updateDoc(pet, {
+        adoptante: "", // quita el adoptante
+        timestamp: serverTimestamp(),
+      });
+    }
+    setAdoptanteSeleccionado("");
+    setIsAdoptantSelected(false);
+    getAdoptants(); //actualiza el componente
+  };
+
+  const [showRejectAllModal, setShowRejectAllModal] = useState(false);
+
+  const handleOnRejectAllClick = async () => {
+    setShowRejectAllModal(true);
+  };
+
+  const handleRejectAllConfirm = async () => {
+    const pet = doc(db, "pets", id);
+    const petData = await getDoc(doc(db, "pets", id));
     if (userEmail === petData.data().usuario && petData.data().estado < 800) {
       await updateDoc(pet, {
         estado: 10, // actualiza el estado a en adopción
@@ -92,6 +109,7 @@ export const Adoptantes = () => {
     setAdoptanteSeleccionado("");
     setIsAdoptantSelected(false);
     getAdoptants(); //actualiza el componente
+    setShowRejectAllModal(false);
   };
 
   const handleShowMoreInfo = async (adoptant) => {
@@ -122,13 +140,20 @@ export const Adoptantes = () => {
     <>
       <div className="pet-grid d-flex flex-wrap justify-content-center">
         <Container>
+          <Button className="mb-3"
+            variant="warning"
+            onClick={handleOnRejectAllClick}
+            disabled={isAdoptantSelected}
+          >
+            Descartar todos los adoptantes
+          </Button>
           <ListGroup>
             {adoptants.map((adoptant) => (
               <div key={adoptant.id}>
                 <ListGroupItem header="Email">
                   {adoptant.usuario === adoptanteSeleccionado
                     ? <span className="selected-text">Seleccionado</span>
-                    : "No seleccionado"}
+                    : <span className="not-selected-text">No Seleccionado</span>}
                   <Row>
                     <Col>{adoptant.usuario}</Col>
                     <Col>
@@ -188,6 +213,22 @@ export const Adoptantes = () => {
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowModal(false)}>
             Cerrar
+          </Button>
+        </Modal.Footer>
+      </Modal>
+      <Modal show={showRejectAllModal} onHide={() => setShowRejectAllModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirmación</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p>¿Estás seguro de que deseas descartar a todos los adoptantes y poner la mascota de nuevo en adopción?</p>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowRejectAllModal(false)}>
+            Cancelar
+          </Button>
+          <Button variant="warning" onClick={handleRejectAllConfirm}>
+            Confirmar
           </Button>
         </Modal.Footer>
       </Modal>
