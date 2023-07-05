@@ -172,7 +172,7 @@ export const Adoptantes = () => {
             className="mb-3"
             variant="warning"
             onClick={handleOnRejectAllClick}
-            disabled={isAdoptantSelected}
+            disabled={!isAdoptantSelected || isDelivered}
           >
             Descartar todos los adoptantes
           </Button>
