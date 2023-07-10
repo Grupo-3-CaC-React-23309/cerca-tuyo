@@ -4,6 +4,7 @@ import { useState, useEffect, useContext, useCallback } from "react";
 
 import AuthContext from "../authentication/AuthContext";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 import {
   collection,
@@ -33,31 +34,44 @@ export const MisPublicaciones = () => {
     setPets(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
   }, [petsCollection]);
 
-  const handleOnCardClick = async (id, estado) => {
+  const handleOnCardClick = async (id) => {
     const pet = doc(db, "pets", id);
     const petData = await getDoc(doc(db, "pets", id));
-  
-    if (userEmail === petData.data().usuario) {
-      if (estado < 20) {
-        navigate(`/editar/${pet.id}`);
-      } else if (estado < 800) {
-        navigate(`/adoptantes/${pet.id}`);
-      }
+
+    if (userEmail === petData.data().usuario && petData.data().estado < 20) {
+      navigate(`/editar/${pet.id}`);
+    } else {
+      //tiene pedidos de adopcion
+      navigate(`/adoptantes/${pet.id}`);
     }
   };
 
-  
-
+  // funcion para eliminar a la mascota de la coleccio "pets"
   const handleOnDeleteClick = async (id) => {
     const pet = doc(db, "pets", id);
     const petData = await getDoc(doc(db, "pets", id));
-    
-    if (userEmail === petData.data().usuario && petData.data().estado < 20) {
 
-      
-      //await updateDoc(pet, { estado: 999, timestamp: serverTimestamp() }); //actualiza el estado a eliminado
-      await deleteDoc(pet);//, { estado: 999, timestamp: serverTimestamp() }); //actualiza el estado a eliminado
-      getPets(); //para actualizar la vista
+    if (userEmail === petData.data().usuario && petData.data().estado < 800) {
+      await Swal.fire({
+        title: "Esta seguro?",
+        text: "No va a poder revertir esto!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Si, borrar mascota!",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          deleteDoc(pet); // elimina la mascota... del listado :)
+
+          Swal.fire(
+            "Borrada!",
+            "Su mascota ha sido eliminada del listado.",
+            "success"
+          );
+          getPets(); //para actualizar la vista
+        }
+      });
     }
   };
 
@@ -89,12 +103,16 @@ export const MisPublicaciones = () => {
                   : pet.estado < 500
                   ? "Tiene pedidos de adopcion"
                   : pet.estado < 800
-                  ? "Adoptado"
-                  : pet.estado < 999
-                  ? "Entregado"
-                  : "Eliminado"
+                  ? "Asignado"
+                  : "Entregado"
               }
-              
+              textoBoton={
+                pet.estado < 20
+                  ? "Editar"
+                  : pet.estado < 800
+                  ? "Seleccionar adoptante"
+                  : "No se puede modificar"
+              } //dentro de MisPublicaciones solo se puede editar, NO adoptar
               onCardClick={() => handleOnCardClick(pet.id, pet.estado)}
               onDeleteClick={() => handleOnDeleteClick(pet.id)}
             />

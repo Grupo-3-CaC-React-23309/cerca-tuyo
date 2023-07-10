@@ -5,11 +5,21 @@ import Tooltip from "react-bootstrap/Tooltip";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Modal from "react-bootstrap/Modal";
 import AuthContext from "../authentication/AuthContext";
-import { collection, getDocs, query, where, doc, deleteDoc, setDoc, updateDoc, getDoc, onSnapshot } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  query,
+  doc,
+  deleteDoc,
+  setDoc,
+  where,
+  updateDoc,
+  getDoc,
+} from "firebase/firestore";
 import { db } from "../firebaseConfig/firebaseConfig";
 
 import { useNavigate } from "react-router-dom";
-
+import Swal from "sweetalert2";
 
 export const PetCard = ({
   petId,
@@ -28,15 +38,28 @@ export const PetCard = ({
   onCardClick,
   onDeleteClick,
 }) => {
-
   const { isLoggedIn, userEmail } = useContext(AuthContext);
 
   const [showModal, setShowModal] = useState(false);
 
   const isOwner = userEmail === usuario;
+  const [datosCargados, setDatosCargados] = useState(false);
+
+  //funcion para verificar que el adoptante haya completado los datos
+  const checkIfDataExists = async () => {
+    if (isLoggedIn) {
+      const q = query(
+        collection(db, "personas"),
+        where("user", "==", userEmail)
+      );
+      const querySnapshot = await getDocs(q);
+      console.log(userEmail);
+      console.log(!querySnapshot.empty);
+      setDatosCargados(!querySnapshot.empty);
+    }
+  };
 
   const navigate = useNavigate();
-
 
   const handleEdit = () => {
     navigate(`/editar/${petId}`);
@@ -46,7 +69,6 @@ export const PetCard = ({
     navigate(`/adoptantes/${petId}`);
   };
 
-
   const isPreAdoptado = async (PetId, Usuario) => {
     if (isLoggedIn) {
       const adoptantRef = doc(db, `pets/${PetId}/adoptants`, Usuario);
@@ -55,7 +77,6 @@ export const PetCard = ({
     }
     return false;
   };
-  
 
   const [preAdoptado, setPreAdoptado] = useState(false);
 
@@ -72,53 +93,83 @@ export const PetCard = ({
     onDeleteClick();
   };
 
-  console.log("isLoggedIn:", isLoggedIn);
-  console.log("isOwner:", isOwner);
-  console.log("estado:", estado);
-  console.log("preAdoptado:", preAdoptado);
-
-
   const handleAdopt = async () => {
     const adoptantRef = doc(db, `pets/${petId}/adoptants`, userEmail);
-    const petRef = doc(db, 'pets', petId);
-  
-    await setDoc(adoptantRef, { usuario: userEmail, petId: petId }, { merge: true });
-  
-    await updateDoc(petRef, { estado: 250 }); // Cambia el número a tu código correspondiente para 'Adoptado'
-  
-    setPreAdoptado(true);
+    const petRef = doc(db, "pets", petId);
+    // crea una sub coleccion (adoptants) de pre-adoptantes
+    if ((estado < 500) && datosCargados) {
+      await Swal.fire({
+        title: "Esta seguro de postularse para adoptar esta mascota?",
+        text: "Por favor piense en la responsabilidad que esto impica.",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Si, lo quiero!",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          setDoc(adoptantRef, { usuario: userEmail, petId: petId }); //agrega el adoptante a la subcoleccion
+          updateDoc(petRef, { estado: 20 }); // Cambia el estado de la mascota a 'Pedido'
+          setPreAdoptado(true);
+
+          Swal.fire(
+            "Estas postulado!",
+            "El administrador se contactará con vos para mas info.",
+            "success"
+          );
+        }
+      })
+    } 
+    else {
+      Swal.fire("Debes completar tus datos para poder adoptar");
+    }
   };
-  
 
   const handleUnadopt = async () => {
     const adoptantRef = doc(db, `pets/${petId}/adoptants/${userEmail}`);
-    const petRef = doc(db, 'pets', petId);
-  
-    // Eliminar el documento del adoptante
-    await deleteDoc(adoptantRef);
-  
-    // Verificar si existen otros adoptantes
-    const adoptantsQuery = query(collection(db, `pets/${petId}/adoptants`));
-    const adoptantsSnapshot = await getDocs(adoptantsQuery);
-  
-    // Si no hay otros adoptantes, actualizar el estado de la mascota
-    if (adoptantsSnapshot.empty) {
-      await updateDoc(petRef, { estado: 10 }); // Cambia el número a tu código correspondiente para 'No adoptado'
-    }
-  
-    setPreAdoptado(false);
+    const petRef = doc(db, "pets", petId);
+
+    await Swal.fire({
+      title: "Esta arrepentido de postularse para adoptar esta mascota?",
+      //text: ".",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Si, borrarme del listado",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Eliminar el documento del adoptante
+        deleteDoc(adoptantRef);
+
+        // Verificar si existen otros adoptantes
+        const adoptantsQuery = query(collection(db, `pets/${petId}/adoptants`));
+        const adoptantsSnapshot = getDocs(adoptantsQuery);
+
+        // Si no hay otros adoptantes, actualizar el estado de la mascota
+        if (adoptantsSnapshot.empty) {
+          updateDoc(petRef, { estado: 10 }); // Cambia el número a tu código correspondiente para 'No adoptado'
+        }
+
+        setPreAdoptado(false);
+
+        Swal.fire(
+          "Has sido borrado de la lista de postulantes.",
+          "Si lo deseas, puedes volver a postularte",
+          "success"
+        );
+      }
+    });
   };
-  
 
   useEffect(() => {
     if (isLoggedIn) {
       isPreAdoptado(petId, userEmail).then((result) => {
         setPreAdoptado(result);
       });
+      checkIfDataExists();
     }
   }, [petId, userEmail, isLoggedIn]);
-  
-
 
   return (
     <>
@@ -210,21 +261,45 @@ export const PetCard = ({
                   <Button variant="info" className="me-3" onClick={handleEdit}>
                     Editar
                   </Button>
-                  <Button variant="danger" className="me-2" onClick={deleteClose}>
+                  <Button
+                    variant="danger"
+                    className="me-2"
+                    onClick={deleteClose}
+                  >
                     Eliminar
                   </Button>
                 </>
               )}
-              {isOwner && estado >= 20 && (
+              {isOwner && estado >= 20 && estado < 800 && (
                 <>
                   <Button variant="info" className="me-3" onClick={handleEdit}>
                     Editar
                   </Button>
-                  <Button variant="danger" className="me-3" onClick={deleteClose}>
+                  <Button
+                    variant="danger"
+                    className="me-3"
+                    onClick={deleteClose}
+                  >
                     Eliminar
                   </Button>
-                  <Button variant="primary" className="me-2" onClick={handleSelectAdoptants}>
+                  <Button
+                    variant="primary"
+                    className="me-2"
+                    onClick={handleSelectAdoptants}
+                  >
                     Seleccionar Adoptantes
+                  </Button>
+                </>
+              )}
+
+              {isOwner && estado == 800 && (
+                <>
+                  <Button
+                    variant="primary"
+                    className="me-2"
+                    onClick={handleSelectAdoptants}
+                  >
+                    Adoptantes
                   </Button>
                 </>
               )}
@@ -236,18 +311,12 @@ export const PetCard = ({
                     {
                       // Si la mascota no ha sido preadoptada, muestra el botón de "Adoptar"
                       !preAdoptado ? (
-                        <Button
-                          variant="primary"
-                          onClick={handleAdopt}
-                        >
+                        <Button variant="primary" onClick={handleAdopt}>
                           {"Adoptar"}
                         </Button>
                       ) : (
                         // Si la mascota ha sido preadoptada, muestra el botón de "Ya no me interesa"
-                        <Button
-                          variant="danger"
-                          onClick={handleUnadopt}
-                        >
+                        <Button variant="danger" onClick={handleUnadopt}>
                           Ya no me interesa 😢
                         </Button>
                       )
@@ -259,7 +328,9 @@ export const PetCard = ({
           )}
           {!isLoggedIn && (
             <OverlayTrigger
-              overlay={<Tooltip id="tooltip-disabled">Por favor inicia sesión</Tooltip>}
+              overlay={
+                <Tooltip id="tooltip-disabled">Por favor inicia sesión</Tooltip>
+              }
             >
               <span className="d-inline-block">
                 <Button
