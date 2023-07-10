@@ -1,11 +1,11 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import Tooltip from "react-bootstrap/Tooltip";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Modal from "react-bootstrap/Modal";
 import AuthContext from "../authentication/AuthContext";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { collection, getDocs, query, where, doc, deleteDoc, setDoc } from "firebase/firestore";
 import { db } from "../firebaseConfig/firebaseConfig";
 
 export const PetCard = ({
@@ -56,7 +56,21 @@ export const PetCard = ({
     onDeleteClick();
   };
 
-  isPreAdoptado(petId, userEmail);
+  const handleAdopt = async () => {
+    const adoptantRef = doc(db, `pets/${petId}/adoptants`, userEmail);
+    await setDoc(adoptantRef, { usuario: userEmail, petId: petId });
+    setPreAdoptado(true);
+  };
+
+  const handleUnadopt = async () => {
+    const adoptantRef = doc(db, `pets/${petId}/adoptants`, userEmail);
+    await deleteDoc(adoptantRef);
+    setPreAdoptado(false);
+  };
+
+  useEffect(() => {
+    isPreAdoptado(petId, userEmail);
+  }, [petId, userEmail, isLoggedIn]);
 
   return (
     <>
@@ -143,21 +157,9 @@ export const PetCard = ({
         <Modal.Footer>
           {!isLoggedIn ? (
             <OverlayTrigger
-              overlay={
-                <Tooltip id="tooltip-disabled">
-                  Por favor inicia sesión
-                </Tooltip>
-              }
+              overlay={<Tooltip id="tooltip-disabled">Por favor inicia sesión</Tooltip>}
             >
               <span className="d-inline-block">
-                <Button
-                  variant="primary"
-                  onClick={clickClose}
-                  disabled={!isLoggedIn}
-                  style={{ pointerEvents: !isLoggedIn ? "none" : "auto" }}
-                >
-                  {textoBoton}
-                </Button>
                 {userEmail === usuario && (
                   <Button
                     variant="danger"
@@ -172,14 +174,25 @@ export const PetCard = ({
             </OverlayTrigger>
           ) : (
             <span className="d-inline-block">
-              <Button
-                variant="primary"
-                onClick={clickClose}
-                disabled={preAdoptado}
-                style={{ pointerEvents: !isLoggedIn ? "none" : "auto" }}
-              >
-                {preAdoptado ? "Ya te postulaste" : textoBoton}
-              </Button>
+              {!preAdoptado && (
+                <Button
+                  variant="primary"
+                  onClick={handleAdopt}
+                  disabled={preAdoptado}
+                  style={{ pointerEvents: !isLoggedIn ? "none" : "auto" }}
+                >
+                  {textoBoton}
+                </Button>
+              )}
+              {preAdoptado && (
+                <Button
+                  variant="danger"
+                  onClick={handleUnadopt}
+                  style={{ pointerEvents: !isLoggedIn ? "none" : "auto" }}
+                >
+                  Ya no me interesa 😢
+                </Button>
+              )}
               {((userEmail === usuario) && (estado < 20)) && (
                 <Button
                   variant="danger"
