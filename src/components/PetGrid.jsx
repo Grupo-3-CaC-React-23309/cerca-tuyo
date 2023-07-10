@@ -6,12 +6,6 @@ import AuthContext from "../authentication/AuthContext";
 import {
   collection,
   getDocs,
-  updateDoc,
-  doc,
-  setDoc,
-  serverTimestamp,
-  query,
-  where,
 } from "firebase/firestore";
 
 import { db } from "../firebaseConfig/firebaseConfig";
@@ -22,16 +16,15 @@ Estados de la mascota:
 
     10 = mascota en adopcion
     20 = mascota con pedido de adopcion
-    500 = mascota adoptada  (luego de que el usuario creador acepte el pedido)
+    500 = mascota asignada  (el usuario creador asigna la mascota a un postulante)
     800 = mascota entregada    
     999 = mascota dada de baja (solo el usuario creador puede hacerlo siempre que no este adoptada)
 
 */
 
 export const PetGrid = () => {
-  const { isLoggedIn, userEmail } = useContext(AuthContext);
-  const [datosCargados, setDatosCargados] = useState(false);
-  
+  const { userEmail } = useContext(AuthContext);
+
   //1 configurar useState (hook)
   const [pets, setPets] = useState([]);
   //2 referenciamos a la db de firestore
@@ -45,50 +38,17 @@ export const PetGrid = () => {
     // Si el usuario está logueado, filtra sus publicaciones
     if (userEmail) {
       const filteredPets = allPets.filter(
-        (pet) => pet.usuario !== userEmail && pet.estado < 500
+        (pet) => pet.usuario !== userEmail && pet.estado < 800
       );
       setPets(filteredPets);
     } else {
-      const filteredPets = allPets.filter((pet) => pet.estado < 500);
+      const filteredPets = allPets.filter((pet) => pet.estado < 800);
       setPets(filteredPets);
     }
   }, [petsCollection, userEmail]);
 
-  //funcion para verificar que el adoptante haya completado los datos
-  const checkIfDataExists = async () => {
-    if (isLoggedIn) {
-      const q = query(collection(db, "personas"), where("user", "==", userEmail));
-      const querySnapshot = await getDocs(q);
-      console.log(userEmail);
-      console.log(!querySnapshot.empty) 
-      setDatosCargados(!querySnapshot.empty) 
-    }
-  };
-  
-
-  //funcion para postularse para adoptar
-  const handleOnCardClick = async (idPet, estadoActual) => {
-    // crea una sub coleccion (adoptants) de pre-adoptantes
-    if ((estadoActual < 500) && datosCargados) {
-      const adoptantRef = doc(collection(db, "pets", idPet, "adoptants"));
-      await setDoc(adoptantRef, {
-        id: adoptantRef.id,
-        usuario: userEmail,
-        timestamp: serverTimestamp(),
-      });
-      const pet = doc(db, "pets", idPet);
-      await updateDoc(pet, { estado: 20, timestamp: serverTimestamp() }); //actualiza el estado a pre-adoptado
-      getPets(); //actualiza el componente
-    }
-    else
-    {
-      alert("Debes completar tus datos para poder adoptar");
-    }
-  };
-
   useEffect(() => {
     getPets();
-    checkIfDataExists();
   }, []);
 
   return (
@@ -109,9 +69,8 @@ export const PetGrid = () => {
               edadUnidad={pet.edadUnidad}
               texto={pet.texto}
               estado={pet.estado}
-              textoEstado={pet.estado < 500 ? "Te espera" : "Adoptada"}
-              textoBoton={pet.estado < 500 ? "Adoptar" : ""}
-              onCardClick={() => handleOnCardClick(pet.id, pet.estado)}
+              textoEstado={pet.estado < 800 ? "Te espera" : "Adoptada"}
+              textoBoton={pet.estado < 800 ? "Adoptar" : ""}
             />
           </div>
         ))}

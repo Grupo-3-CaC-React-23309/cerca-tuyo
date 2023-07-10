@@ -4,6 +4,7 @@ import { db } from '../firebaseConfig/firebaseConfig'
 import AuthContext from '../authentication/AuthContext';
 import { Button, Form, Container, Row, Col } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
+import Swal from "sweetalert2";
 
 export const Editar = () => {
     const { isLoggedIn, userEmail } = useContext(AuthContext);
@@ -62,7 +63,7 @@ export const Editar = () => {
                 usuario: usuario,
             });
             // Navegar al inicio
-            alert("Datos actualizados correctamente");
+            Swal.fire("Datos actualizados correctamente");
             navigate("/");
 
         } else {

@@ -52,8 +52,7 @@ export const Adoptantes = () => {
     // Si ya esta entregada la mascota
     if (petData.data().estado===800) {
       setIsDelivered(true);
-    }
-    
+    }    
   };
 
   const getAdoptants = useCallback(async () => {
@@ -110,6 +109,7 @@ export const Adoptantes = () => {
     const petData = await getDoc(doc(db, "pets", id));
     if (userEmail === petData.data().usuario && petData.data().estado < 800) {
       await updateDoc(pet, {
+        estado: 20, // actualiza el estado a: en adopción con pedidos
         adoptante: "", // quita el adoptante
         timestamp: serverTimestamp(),
       });
