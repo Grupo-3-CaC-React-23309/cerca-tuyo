@@ -49,7 +49,6 @@ function App() {
 
           <Routes>
             <Route path="/" element={<PetGrid />} />
-            <Route path="/cerca-tuyo" element={<PetGrid />} />
             <Route path="/crear" element={<Crear />} />
             <Route path="/login" element={<Login darkMode={darkMode} />} />
             <Route path="/logout" element={<Logout darkMode={darkMode}/>} />
