@@ -26,7 +26,7 @@ export const NavBar = ({ toggleDarkMode, darkMode }) => {
         // La barra de navegación principal. Le añadimos la clase dark-mode si darkMode es verdadero.
         <Navbar expand="lg" className={`navbar ${darkMode ? 'dark-mode' : ''}`}>
             <Container fluid>
-                <LinkContainer to="/">
+                <LinkContainer to="/cerca-tuyo/">
                     <Navbar.Brand>
                         <img
                             src={darkMode ? logoDark : logoLight}
@@ -40,7 +40,7 @@ export const NavBar = ({ toggleDarkMode, darkMode }) => {
                 <Navbar.Toggle aria-controls="navbarNav" />
                 <Navbar.Collapse id="navbarNav">
                     <Nav className="me-auto" activeKey={location.pathname}>
-                        <LinkContainer to="/">
+                        <LinkContainer to="/cerca-tuyo/">
                             <Nav.Link>Inicio</Nav.Link>
                         </LinkContainer>
                         {/* Renderizamos el enlace "Dar en Adopción" solo si el usuario está autenticado */}

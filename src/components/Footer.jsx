@@ -10,7 +10,7 @@ export const Footer = ({ darkMode }) => {
         <div className="col-md-4">
           <h5>Enlaces</h5>
           <ul className="list-unstyled justify-content-between">
-            <li><Link className="nav-link" to="/">Inicio</Link></li>
+            <li><Link className="nav-link" to="/cerca-tuyo/">Inicio</Link></li>
             <li><Link className="nav-link" to="/sobre-nosotros">Sobre Nosotros</Link></li>
             <li><Link className="nav-link" to="/registro">Registrarse</Link></li>
             <li><Link className="nav-link" to="/login">Login</Link></li>

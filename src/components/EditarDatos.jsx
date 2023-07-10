@@ -74,7 +74,7 @@ export const EditarDatos = () => {
             });
             // Navegar al inicio
             Swal.fire("Datos actualizados correctamente");
-            navigate("/");            
+            navigate("/cerca-tuyo/");            
         } else {
             Swal.fire("Hubo un problema al actualizar tus datos");
         }

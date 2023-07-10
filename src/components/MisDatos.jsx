@@ -77,7 +77,7 @@ export const MisDatos = () => {
             setVacaciones("");
             // Navegar al inicio
             Swal.fire("Datos actualizados correctamente");
-            navigate("/");
+            navigate("/cerca-tuyo/");
 
         } else {
             alert("Por favor completá todos los datos");
