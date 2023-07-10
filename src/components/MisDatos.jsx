@@ -4,6 +4,7 @@ import AuthContext from '../authentication/AuthContext';
 import { Button, Form, Container, Row, Col } from "react-bootstrap";
 import { useNavigate } from 'react-router-dom';
 import { collection, addDoc, query, where, getDocs } from "firebase/firestore";
+import Swal from "sweetalert2";
 
 export const MisDatos = () => {
     const { isLoggedIn, userEmail } = useContext(AuthContext);
@@ -42,7 +43,7 @@ export const MisDatos = () => {
         if (isLoggedIn) {
             // Validar que los campos obligatorios no estén vacíos
             if (nombre === "" || tipo === "" || localidad === "" || otrasMascotas === "") {
-                alert("Por favor completá todos los datos obligatorios");
+                Swal.fire("Por favor completá todos los datos obligatorios");
                 return;
             }
 
@@ -74,6 +75,10 @@ export const MisDatos = () => {
             setCondicion("");
             setConvivientes("");
             setVacaciones("");
+            // Navegar al inicio
+            Swal.fire("Datos actualizados correctamente");
+            navigate("/");
+
         } else {
             alert("Por favor completá todos los datos");
         }
@@ -91,7 +96,7 @@ export const MisDatos = () => {
 
                         <Form.Group controlId="formApellido" className="mt-3">
                             <Form.Label>Apellido *</Form.Label>
-                            <Form.Control type="text" value={apellido} onChange={(e) => setApellido(e.target.value)} placeholder="Ejemplo: Wayne" />
+                            <Form.Control type="text" value={apellido} onChange={(e) => setApellido(e.target.value)} placeholder="Ejemplo: Wayne" required />
                         </Form.Group>
 
                         <Form.Group controlId="formVivienda" className="mt-3">
@@ -116,17 +121,17 @@ export const MisDatos = () => {
                         
                         <Form.Group controlId="formDomicilio" className="mt-3">
                             <Form.Label>Domicilio</Form.Label>
-                            <Form.Control type="text" value={domicilio} onChange={(e) => setDomicilio(e.target.value)} placeholder="Ejemplo: Av. Rivadavia 1031" />
+                            <Form.Control type="text" value={domicilio} onChange={(e) => setDomicilio(e.target.value)} placeholder="Ejemplo: Av. Rivadavia 1031" required/>
                         </Form.Group>
 
                         <Form.Group controlId="formCodigoPostal" className="mt-3">
                             <Form.Label>Codigo Postal</Form.Label>
-                            <Form.Control type="number" value={codigoPostal} onChange={(e) => setCodigoPostal(e.target.value)} placeholder="Ejemplo: 1414" />
+                            <Form.Control type="number" value={codigoPostal} onChange={(e) => setCodigoPostal(e.target.value)} placeholder="Ejemplo: 1414" required/>
                         </Form.Group>
 
                         <Form.Group controlId="formCondicion" className="mt-3">
                             <Form.Label>Sos Propietario o Alquilás?</Form.Label>
-                            <Form.Select value={condicion} onChange={(e) => setCondicion(e.target.value)}>
+                            <Form.Select value={condicion} onChange={(e) => setCondicion(e.target.value)} required>
                                 <option disabled value="">Selecciona la opción...</option>
                                 <option>Propietario</option>
                                 <option>Inquilino</option>
@@ -135,12 +140,12 @@ export const MisDatos = () => {
 
                         <Form.Group controlId="formConvivientes" className="mt-3">
                             <Form.Label>Contanos con quién vivís y sus edades</Form.Label>
-                            <Form.Control type="text" value={convivientes} onChange={(e) => setConvivientes(e.target.value)} placeholder="Ejemplo: Batichica 40 años" />
+                            <Form.Control type="text" value={convivientes} onChange={(e) => setConvivientes(e.target.value)} placeholder="Ejemplo: Batichica 40 años" required/>
                         </Form.Group>
 
                         <Form.Group controlId="formvacaciones" className="mt-3">
                             <Form.Label>¿Qué harías con el animal en caso de vacaciones?</Form.Label>
-                            <Form.Control type="text" value={vacaciones} onChange={(e) => setVacaciones(e.target.value)} placeholder="Detalle qué harías con la mascota" />
+                            <Form.Control type="text" value={vacaciones} onChange={(e) => setVacaciones(e.target.value)} placeholder="Detalle qué harías con la mascota" required/>
                         </Form.Group>
 
                         <Button

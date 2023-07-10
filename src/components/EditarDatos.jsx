@@ -4,6 +4,7 @@ import AuthContext from '../authentication/AuthContext';
 import { Button, Form, Container, Row, Col } from "react-bootstrap";
 import { useNavigate } from 'react-router-dom';
 import { doc, updateDoc, collection, query, where, getDocs } from "firebase/firestore";
+import Swal from "sweetalert2";
 
 export const EditarDatos = () => {
     const { isLoggedIn, userEmail } = useContext(AuthContext);
@@ -30,7 +31,6 @@ export const EditarDatos = () => {
                 const querySnapshot = await getDocs(q);
                 if (!querySnapshot.empty) {
                     const docData = querySnapshot.docs[0];
-                    console.log(docData)
                     setDocId(docData.id);  // Store the document ID
                     const data = docData.data();
                     setNombre(data.nombre);
@@ -72,9 +72,11 @@ export const EditarDatos = () => {
                 vacaciones,
                 user: userEmail,
             });
-            alert("Datos actualizados correctamente");
+            // Navegar al inicio
+            Swal.fire("Datos actualizados correctamente");
+            navigate("/");            
         } else {
-            alert("Hubo un problema al actualizar tus datos");
+            Swal.fire("Hubo un problema al actualizar tus datos");
         }
     };
 

@@ -53,8 +53,6 @@ export const PetCard = ({
         where("user", "==", userEmail)
       );
       const querySnapshot = await getDocs(q);
-      console.log(userEmail);
-      console.log(!querySnapshot.empty);
       setDatosCargados(!querySnapshot.empty);
     }
   };
