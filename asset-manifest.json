@@ -1,17 +1,17 @@
 {
   "files": {
     "main.css": "/cerca-tuyo/static/css/main.29f46614.css",
-    "main.js": "/cerca-tuyo/static/js/main.4f258bee.js",
+    "main.js": "/cerca-tuyo/static/js/main.8434a893.js",
     "static/js/787.accb6b33.chunk.js": "/cerca-tuyo/static/js/787.accb6b33.chunk.js",
     "static/media/logoLight.png": "/cerca-tuyo/static/media/logoLight.f635b69d009d5e749e81.png",
     "static/media/logoDark.png": "/cerca-tuyo/static/media/logoDark.6baefe4cde3a9d31f77f.png",
     "index.html": "/cerca-tuyo/index.html",
     "main.29f46614.css.map": "/cerca-tuyo/static/css/main.29f46614.css.map",
-    "main.4f258bee.js.map": "/cerca-tuyo/static/js/main.4f258bee.js.map",
+    "main.8434a893.js.map": "/cerca-tuyo/static/js/main.8434a893.js.map",
     "787.accb6b33.chunk.js.map": "/cerca-tuyo/static/js/787.accb6b33.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.29f46614.css",
-    "static/js/main.4f258bee.js"
+    "static/js/main.8434a893.js"
   ]
 }
