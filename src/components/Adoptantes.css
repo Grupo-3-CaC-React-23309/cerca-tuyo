@@ -1,0 +1,7 @@
+.selected-text {
+    color: green;
+}
+
+.not-selected-text {
+    color: rgb(193, 108, 115);
+}

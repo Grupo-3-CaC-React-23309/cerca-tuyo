@@ -3,9 +3,8 @@ import AuthContext from '../authentication/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { auth, signInWithEmailAndPassword, sendPasswordResetEmail } from '../firebaseConfig/firebaseConfig'
 import "./Login.css"
-// '../firebaseConfig/firebaseConfig';
 
-export const Login = () => {
+export const Login = ({ darkMode }) => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
@@ -14,55 +13,57 @@ export const Login = () => {
 
     const handleLogin = () => {
         signInWithEmailAndPassword(auth, username, password)
-        .then((userCredential) => {
-            // El usuario ha iniciado sesión
-            authContext.onLogin(userCredential.user.email);
+          .then((userCredential) => {
+            // Signed in
+            const userEmail = userCredential.user.email; // Get the user's email
+            authContext.onLogin(userEmail); // Pass the email to the onLogin function
             navigate('/');
-        })
-        .catch((error) => {
-            // Hubo un error al iniciar sesión
+          })
+          .catch((error) => {
+            // An error happened.
             setError("Hubo un error al iniciar sesión. Por favor, intenta de nuevo.");
             console.log(error);
-        });
-    };
+          });
+      };
 
     const handlePasswordReset = () => {
         sendPasswordResetEmail(auth, username)
-        .then(() => {
-            // Correo electrónico de restablecimiento de contraseña enviado
-            alert("Correo electrónico de restablecimiento de contraseña enviado.");
-        })
-        .catch((error) => {
-            // Hubo un error al enviar el correo electrónico de restablecimiento de contraseña
-            setError("Error al enviar el correo electrónico de restablecimiento de contraseña.");
-            console.log(error);
-        });
+            .then(() => {
+                // Password reset email sent!
+                alert("Correo electrónico de restablecimiento de contraseña enviado.");
+            })
+            .catch((error) => {
+                // An error happened
+                setError("Error al enviar el correo electrónico de restablecimiento de contraseña.");
+                console.log(error);
+            });
     };
 
     return (
-        <div className='container iniSesion'>
+       
+        <div className={`container iniSesion ${darkMode ? 'dark-mode' : ''}`}>
             <div className='row'>
-            <div className='col mt-4'>
-            <h2>Iniciar sesion</h2>
-            {error && <p>{error}</p>}
-            <div className='mb-4 mt-4'>
-            <input type="text" placeholder="Email" className='form-control' value={username} onChange={(e) => setUsername(e.target.value)} />
-            </div>
-            <div className='mb-4'>
-            <input type="password" placeholder="Contraseña" className='form-control' value={password} onChange={(e) => setPassword(e.target.value)} />
-            </div>
-            <div className='row mb-4 '>
-                <div className='col ' >
-                <button onClick={handleLogin} className='btn btn-secondary m-3'>Iniciar sesión</button>
-                <button onClick={handlePasswordReset} className='btn btn-secondary'>Olvidé mi contraseña</button>
+                <div className='col mt-4'>
+                    <h2 className="dark-modeLogin">Iniciar sesion</h2>
+                    {error && <p>{error}</p>}
+                    <div className='mb-4 mt-4'>
+                        <input type="text" placeholder="Email" className='form-control' value={username} onChange={(e) => setUsername(e.target.value)} />
+                    </div>
+                    <div className='mb-4'>
+                        <input type="password" placeholder="Contraseña" className='form-control' value={password} onChange={(e) => setPassword(e.target.value)} />
+                    </div>
+                    <div className='row mb-4 '>
+                        <div className='col ' >
+                            <button onClick={handleLogin} className='btn btn-secondary m-3'>Iniciar sesión</button>
+                            <button onClick={handlePasswordReset} className='btn btn-secondary'>Olvidé mi contraseña</button>
+                        </div>
+
+                    </div>
+
                 </div>
-            
             </div>
-            
-            </div>
-            </div>
-            
         </div>
+    
     );
 };
 

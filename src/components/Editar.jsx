@@ -57,7 +57,8 @@ export const Editar = () => {
                 texto:texto,
                 imagenURL:imagenURL,
                 estado: estado,
-                edad: `${edadCantidad} ${edadUnidad}`,
+                edadCantidad: edadCantidad,
+                edadUnidad: edadUnidad,
                 usuario: usuario,
             });
             // Navegar al inicio
@@ -159,7 +160,7 @@ export const Editar = () => {
                         </Form.Group>
 
                         <Button variant="primary" type="submit" className="mt-3">
-                            Editar
+                            Aceptar
                         </Button>
                     </Form>
                 </Col>

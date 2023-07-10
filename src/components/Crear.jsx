@@ -33,9 +33,6 @@ export const Crear = () => {
             // Ensure the weight is a number
             const numericalPeso = peso ? parseFloat(peso) : null;
 
-            // Ensure age is properly formatted
-            const edad = edadCantidad && edadUnidad ? `${edadCantidad} ${edadUnidad}` : null;
-
             await addDoc(petsCollection, {
                 nombre,
                 tipo: tipo === "Otro" ? otroTipo : tipo,
@@ -44,8 +41,9 @@ export const Crear = () => {
                 peso: numericalPeso, // store it as a number
                 texto,
                 imagenURL,
-                estado: false,
-                edad, // store it properly formatted or as null
+                estado: 10,
+                edadCantidad, 
+                edadUnidad, // store it properly formatted or as null
                 usuario,
             });
 
@@ -64,8 +62,6 @@ export const Crear = () => {
             alert("Por favor inicia sesión para agregar una mascota");
         }
     };
-
-
 
     return (
         <Container className="mt-5">
@@ -153,7 +149,7 @@ export const Crear = () => {
                             <Form.Control type="text" value={imagenURL} onChange={(e) => setImagenURL(e.target.value)} placeholder="Ejemplo: https://misitio.com/imagen.jpg" />
                         </Form.Group>
 
-                        <Button variant="primary" type="submit" className="mt-3">
+                        <Button variant="primary" type="submit" className="mt-3 mb-3">
                             Crear
                         </Button>
                     </Form>

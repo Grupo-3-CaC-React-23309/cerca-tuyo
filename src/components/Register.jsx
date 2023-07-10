@@ -4,15 +4,11 @@ import { useNavigate } from 'react-router-dom';
 import { auth, createUserWithEmailAndPassword } from '../firebaseConfig/firebaseConfig';
 import "./Register.css"
 
-export const Register = () => {
+export const Register = ({ darkMode }) => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const authContext = useContext(AuthContext);
-    const [ubicacion, setUbicacion] = useState('');
-    const [tipoVivienda, setTipoVivienda] = useState('');
-    const [tienePatio, setTienePatio] = useState(false);
-    const [tieneMascotas, setTieneMascotas] = useState(false);
     const navigate = useNavigate();
 
     const handleRegister = (e) => {
@@ -27,7 +23,8 @@ export const Register = () => {
         createUserWithEmailAndPassword(auth, username, password)
         .then((userCredential) => {
             // El usuario se ha registrado y está logueado
-            authContext.onLogin();
+            const userEmail = userCredential.user.email; // Get the user's email
+            authContext.onLogin(userEmail);
             navigate('/');
         })
         .catch((error) => {
@@ -38,7 +35,7 @@ export const Register = () => {
     };
 
     return (
-        <div className='container registro'>
+        <div className={`container registro ${darkMode ? 'dark-mode' : ''}`}>
             <div className='row'>
                 <div className='col mt-4'>
                 <h2>Registro</h2>

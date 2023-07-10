@@ -2,14 +2,16 @@ import React, { useContext, useState } from 'react';
 import AuthContext from '../authentication/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { auth, signOut } from '../firebaseConfig/firebaseConfig'
-
+import "./Logout.css"
 // '../firebaseConfig/firebaseConfig';
 
-export const Logout = () => {
+export const Logout = ({ darkMode }) => {
     
     const [error, setError] = useState("");
     const authContext = useContext(AuthContext);
     const navigate = useNavigate();
+
+  
 
     const handleLogout = () => {
         signOut(auth)
@@ -27,11 +29,13 @@ export const Logout = () => {
     };
 
     return (
-        <div>
-            <h2>Logout</h2>
+        
+        <div className={`container log mt-3 ${darkMode ? 'dark-mode' : ''}`}>
+            <h2 className='mt-3'>¿Deseas cerrar sesión?</h2>
             {error && <p>{error}</p>}
-            <button onClick={handleLogout}>Cerrar sesión</button>
-        </div>
+            <button className='btn btn-secondary mt-3 mb-3' onClick={handleLogout}>Cerrar sesión</button>
+            </div>
+    
     );
 };
 

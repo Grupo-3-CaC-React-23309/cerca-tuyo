@@ -1,70 +1,100 @@
 import React, { useContext } from 'react';
-import { Dropdown } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
-import AuthContext from '../authentication/AuthContext'; // Asegúrate de usar tu ruta correcta para importar
 
-export const NavBar = () => {
-    const { isLoggedIn, userEmail } = useContext(AuthContext); // Usar el contexto para obtener el estado de autenticación
+import { LinkContainer } from 'react-router-bootstrap';
+import { Dropdown, Navbar, Nav, Container } from 'react-bootstrap';
+
+import AuthContext from '../authentication/AuthContext';
+
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faMoon, faSun } from '@fortawesome/free-solid-svg-icons';
+
+import { useLocation, Link } from 'react-router-dom';
+
+import './NavBar.css'
+import logoDark from '../images/logoDark.png';
+import logoLight from '../images/logoLight.png';
+
+
+export const NavBar = ({ toggleDarkMode, darkMode }) => {
+    // Tomamos el estado de autenticación del usuario del AuthContext.
+    const { isLoggedIn, userEmail } = useContext(AuthContext);
+    // Utilizamos el hook useLocation para obtener la ruta actual.
+    const location = useLocation();
+
     return (
-        <nav className="navbar navbar-expand-lg navbar-light bg-light">
-            <div className="container-fluid">
-                <Link className="navbar-brand" to="/">Cerca Tuyo</Link>
-                <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span className="navbar-toggler-icon"></span>
-                </button>
-                <div className="collapse navbar-collapse" id="navbarNav">
-                    <ul className="navbar-nav me-auto">
-                        <li className="nav-item">
-                            <Link className="nav-link" to="/">Inicio</Link>
-                        </li>
+        // La barra de navegación principal. Le añadimos la clase dark-mode si darkMode es verdadero.
+        <Navbar expand="lg" className={`navbar ${darkMode ? 'dark-mode' : ''}`}>
+            <Container fluid>
+                <LinkContainer to="/">
+                    <Navbar.Brand>
+                        <img
+                            src={darkMode ? logoDark : logoLight}
+                            width="30"
+                            height="30"
+                            className="d-inline-block align-top"
+                            alt="Logo"
+                        />
+                        {' '}Cerca Tuyo</Navbar.Brand>
+                </LinkContainer>
+                <Navbar.Toggle aria-controls="navbarNav" />
+                <Navbar.Collapse id="navbarNav">
+                    <Nav className="me-auto" activeKey={location.pathname}>
+                        <LinkContainer to="/">
+                            <Nav.Link>Inicio</Nav.Link>
+                        </LinkContainer>
+                        {/* Renderizamos el enlace "Dar en Adopción" solo si el usuario está autenticado */}
                         {isLoggedIn && (
-                            <li className="nav-item">
-                                <Link className="nav-link" to="/crear">Dar en Adopción</Link>
-                            </li>
+                            <LinkContainer to="/crear">
+                                <Nav.Link>Dar en Adopción</Nav.Link>
+                            </LinkContainer>
                         )}
-                        <li className="nav-item">
-                            <Link className="nav-link" to="/sobre-nosotros">Sobre Nosotros</Link>
-                        </li>
-                        <li className="nav-item">
-                            <Link className="nav-link" to="/contacto">Contacto</Link>
-                        </li>
-                    </ul>
+                        <LinkContainer to="/sobre-nosotros">
+                            <Nav.Link>Sobre Nosotros</Nav.Link>
+                        </LinkContainer>
+                    </Nav>
+                    {/* Renderizamos diferentes conjuntos de enlaces dependiendo de si el usuario está autenticado o no. */}
                     {isLoggedIn ? (
-                        <ul className="navbar-nav">
-                            <li className="nav-item">
-                                <Link className="nav-link" to="/mis-publicaciones">Mis Publicaciones</Link>
-                            </li>
-                            <li className="nav-item">
-                                <Link className="nav-link" to="/mis-datos">Mis Datos</Link>
-                            </li>
-                            <li className="nav-item">
-                                <Link className="nav-link" to="/preferencias">Preferencias</Link>
-                            </li>
-                            <li className="nav-item">
+                        <Nav activeKey={location.pathname}>
+                            <LinkContainer to="/mis-publicaciones">
+                                <Nav.Link>Mis Publicaciones</Nav.Link>
+                            </LinkContainer>
+                            <LinkContainer to="/mis-datos">
+                                <Nav.Link>Mis Datos</Nav.Link>
+                            </LinkContainer>
+                            <Nav.Item>
                                 <Dropdown>
                                     <Dropdown.Toggle variant="none" id="dropdown-basic">
                                         {userEmail}
                                     </Dropdown.Toggle>
-
                                     <Dropdown.Menu>
-                                        <Dropdown.Item href="/logout">Cerrar Sesión</Dropdown.Item>
+                                        <Dropdown.Item><Link to="/logout">Cerrar Sesión</Link></Dropdown.Item>
                                     </Dropdown.Menu>
                                 </Dropdown>
-                            </li>
-                        </ul>
+                            </Nav.Item>
+                        </Nav>
                     ) : (
-                        <ul className="navbar-nav">
-                            <li className="nav-item">
-                                <Link className="nav-link" to="/login">Iniciar sesion</Link>
-                            </li>
-                            <li className="nav-item">
-                                <Link className="nav-link" to="/registro">Registrarme</Link>
-                            </li>
-                        </ul>
+                        <Nav activeKey={location.pathname}>
+                            <LinkContainer to="/login">
+                                <Nav.Link>Iniciar sesion</Nav.Link>
+                            </LinkContainer>
+                            <LinkContainer to="/registro">
+                                <Nav.Link>Registrame</Nav.Link>
+                            </LinkContainer>
+                        </Nav>
                     )}
-                </div>
-            </div>
-        </nav>
+                    {/* La sección de cambiar el modo oscuro o claro de la aplicación */}
+                    <Nav>
+                        <Nav.Item>
+                            <button type="button" className="btn toggle-mode" onClick={toggleDarkMode}>
+                                {/* El ícono cambia dependiendo de si estamos en modo oscuro o claro */}
+                                <FontAwesomeIcon className={darkMode ? "icon-sun-dark" : ""} icon={darkMode ? faSun : faMoon} />
+                            </button>
+                        </Nav.Item>
+                    </Nav>
+                </Navbar.Collapse>
+            </Container>
+        </Navbar>
     );
 };
 
