@@ -1,12 +1,15 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import Tooltip from "react-bootstrap/Tooltip";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Modal from "react-bootstrap/Modal";
 import AuthContext from "../authentication/AuthContext";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { collection, getDocs, query, where, doc, deleteDoc, setDoc, updateDoc, getDoc, onSnapshot } from "firebase/firestore";
 import { db } from "../firebaseConfig/firebaseConfig";
+
+import { useNavigate } from "react-router-dom";
+
 
 export const PetCard = ({
   petId,
@@ -21,25 +24,38 @@ export const PetCard = ({
   textoEstado,
   imagenURL,
   usuario,
-  textoBoton,
   estado,
   onCardClick,
   onDeleteClick,
 }) => {
+
   const { isLoggedIn, userEmail } = useContext(AuthContext);
 
   const [showModal, setShowModal] = useState(false);
 
+  const isOwner = userEmail === usuario;
+
+  const navigate = useNavigate();
+
+
+  const handleEdit = () => {
+    navigate(`/editar/${petId}`);
+  };
+
+  const handleSelectAdoptants = () => {
+    navigate(`/adoptantes/${petId}`);
+  };
+
+
   const isPreAdoptado = async (PetId, Usuario) => {
     if (isLoggedIn) {
-      const q = query(
-        collection(db, `pets/${PetId}/adoptants`),
-        where("usuario", "==", Usuario)
-      );
-      const querySnapshot = await getDocs(q);
-      setPreAdoptado(!querySnapshot.empty);
+      const adoptantRef = doc(db, `pets/${PetId}/adoptants`, Usuario);
+      const adoptantSnapshot = await getDoc(adoptantRef);
+      return adoptantSnapshot.exists();
     }
+    return false;
   };
+  
 
   const [preAdoptado, setPreAdoptado] = useState(false);
 
@@ -56,7 +72,53 @@ export const PetCard = ({
     onDeleteClick();
   };
 
-  isPreAdoptado(petId, userEmail);
+  console.log("isLoggedIn:", isLoggedIn);
+  console.log("isOwner:", isOwner);
+  console.log("estado:", estado);
+  console.log("preAdoptado:", preAdoptado);
+
+
+  const handleAdopt = async () => {
+    const adoptantRef = doc(db, `pets/${petId}/adoptants`, userEmail);
+    const petRef = doc(db, 'pets', petId);
+  
+    await setDoc(adoptantRef, { usuario: userEmail, petId: petId }, { merge: true });
+  
+    await updateDoc(petRef, { estado: 250 }); // Cambia el número a tu código correspondiente para 'Adoptado'
+  
+    setPreAdoptado(true);
+  };
+  
+
+  const handleUnadopt = async () => {
+    const adoptantRef = doc(db, `pets/${petId}/adoptants/${userEmail}`);
+    const petRef = doc(db, 'pets', petId);
+  
+    // Eliminar el documento del adoptante
+    await deleteDoc(adoptantRef);
+  
+    // Verificar si existen otros adoptantes
+    const adoptantsQuery = query(collection(db, `pets/${petId}/adoptants`));
+    const adoptantsSnapshot = await getDocs(adoptantsQuery);
+  
+    // Si no hay otros adoptantes, actualizar el estado de la mascota
+    if (adoptantsSnapshot.empty) {
+      await updateDoc(petRef, { estado: 10 }); // Cambia el número a tu código correspondiente para 'No adoptado'
+    }
+  
+    setPreAdoptado(false);
+  };
+  
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      isPreAdoptado(petId, userEmail).then((result) => {
+        setPreAdoptado(result);
+      });
+    }
+  }, [petId, userEmail, isLoggedIn]);
+  
+
 
   return (
     <>
@@ -141,59 +203,78 @@ export const PetCard = ({
           </p>
         </Modal.Body>
         <Modal.Footer>
-          {!isLoggedIn ? (
-            <OverlayTrigger
-              overlay={
-                <Tooltip id="tooltip-disabled">
-                  Por favor inicia sesión
-                </Tooltip>
+          {isLoggedIn && (
+            <span className="d-inline-block">
+              {isOwner && estado < 20 && (
+                <>
+                  <Button variant="info" className="me-3" onClick={handleEdit}>
+                    Editar
+                  </Button>
+                  <Button variant="danger" className="me-2" onClick={deleteClose}>
+                    Eliminar
+                  </Button>
+                </>
+              )}
+              {isOwner && estado >= 20 && (
+                <>
+                  <Button variant="info" className="me-3" onClick={handleEdit}>
+                    Editar
+                  </Button>
+                  <Button variant="danger" className="me-3" onClick={deleteClose}>
+                    Eliminar
+                  </Button>
+                  <Button variant="primary" className="me-2" onClick={handleSelectAdoptants}>
+                    Seleccionar Adoptantes
+                  </Button>
+                </>
+              )}
+
+              {
+                // Solo muestra los botones si el usuario no es el propietario y el estado de la mascota es menor a 800
+                !isOwner && estado < 800 && (
+                  <>
+                    {
+                      // Si la mascota no ha sido preadoptada, muestra el botón de "Adoptar"
+                      !preAdoptado ? (
+                        <Button
+                          variant="primary"
+                          onClick={handleAdopt}
+                        >
+                          {"Adoptar"}
+                        </Button>
+                      ) : (
+                        // Si la mascota ha sido preadoptada, muestra el botón de "Ya no me interesa"
+                        <Button
+                          variant="danger"
+                          onClick={handleUnadopt}
+                        >
+                          Ya no me interesa 😢
+                        </Button>
+                      )
+                    }
+                  </>
+                )
               }
+            </span>
+          )}
+          {!isLoggedIn && (
+            <OverlayTrigger
+              overlay={<Tooltip id="tooltip-disabled">Por favor inicia sesión</Tooltip>}
             >
               <span className="d-inline-block">
                 <Button
                   variant="primary"
-                  onClick={clickClose}
-                  disabled={!isLoggedIn}
-                  style={{ pointerEvents: !isLoggedIn ? "none" : "auto" }}
+                  disabled
+                  style={{ pointerEvents: "none" }}
+                  className="ms-3"
                 >
-                  {textoBoton}
+                  {"Adoptar"}
                 </Button>
-                {userEmail === usuario && (
-                  <Button
-                    variant="danger"
-                    onClick={deleteClose}
-                    disabled={!isLoggedIn}
-                    style={{ pointerEvents: !isLoggedIn ? "none" : "auto" }}
-                  >
-                    Eliminar
-                  </Button>
-                )}
               </span>
             </OverlayTrigger>
-          ) : (
-            <span className="d-inline-block">
-              <Button
-                variant="primary"
-                onClick={clickClose}
-                disabled={preAdoptado}
-                style={{ pointerEvents: !isLoggedIn ? "none" : "auto" }}
-              >
-                {preAdoptado ? "Ya te postulaste" : textoBoton}
-              </Button>
-              {((userEmail === usuario) && (estado < 20)) && (
-                <Button
-                  variant="danger"
-                  onClick={deleteClose}
-                  disabled={preAdoptado}
-                  style={{ pointerEvents: !isLoggedIn ? "none" : "auto" }}
-                >
-                  Eliminar
-                </Button>
-              )}
-            </span>
           )}
           <Button variant="secondary" onClick={handleClose}>
-            Close
+            Cerrar
           </Button>
         </Modal.Footer>
       </Modal>

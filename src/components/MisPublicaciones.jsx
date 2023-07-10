@@ -33,17 +33,20 @@ export const MisPublicaciones = () => {
     setPets(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
   }, [petsCollection]);
 
-  const handleOnCardClick = async (id) => {
+  const handleOnCardClick = async (id, estado) => {
     const pet = doc(db, "pets", id);
     const petData = await getDoc(doc(db, "pets", id));
-
-    if (userEmail === petData.data().usuario && petData.data().estado < 20) {
-      navigate(`/editar/${pet.id}`);
-    } else {
-      //tiene pedidos de adopcion
-      navigate(`/adoptantes/${pet.id}`);
+  
+    if (userEmail === petData.data().usuario) {
+      if (estado < 20) {
+        navigate(`/editar/${pet.id}`);
+      } else if (estado < 800) {
+        navigate(`/adoptantes/${pet.id}`);
+      }
     }
   };
+
+  
 
   const handleOnDeleteClick = async (id) => {
     const pet = doc(db, "pets", id);
@@ -91,14 +94,7 @@ export const MisPublicaciones = () => {
                   ? "Entregado"
                   : "Eliminado"
               }
-              textoBoton={
-                pet.estado < 20
-                  ? "Editar"
-                  : pet.estado < 800
-                  ? "Seleccionar adoptante"
-                  : "No se puede modificar"
-                                    
-              } //dentro de MisPublicaciones solo se puede editar, NO adoptar
+              
               onCardClick={() => handleOnCardClick(pet.id, pet.estado)}
               onDeleteClick={() => handleOnDeleteClick(pet.id)}
             />

@@ -62,6 +62,7 @@ export const Editar = () => {
                 usuario: usuario,
             });
             // Navegar al inicio
+            alert("Datos actualizados correctamente");
             navigate("/");
 
         } else {
@@ -159,7 +160,7 @@ export const Editar = () => {
                             <Form.Control type="text" value={imagenURL} onChange={(e) => setImagenURL(e.target.value)} placeholder="Ejemplo: https://misitio.com/imagen.jpg" />
                         </Form.Group>
 
-                        <Button variant="primary" type="submit" className="mt-3">
+                        <Button variant="primary" type="submit" className="my-3">
                             Aceptar
                         </Button>
                     </Form>
