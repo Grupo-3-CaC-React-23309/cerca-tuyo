@@ -1,7 +1,7 @@
 {
   "name": "cerca-tuyo",
   "version": "0.1.0",
-  "homepage": "https://grupo-3-cac-react-23309.github.io",
+  "homepage": "https://grupo-3-cac-react-23309.github.io/cerca-tuyo/",
   "private": true,
   "dependencies": {
     "@fortawesome/free-solid-svg-icons": "^6.4.0",
