@@ -3,10 +3,12 @@ import { collection, addDoc } from "firebase/firestore";
 import { db } from '../firebaseConfig/firebaseConfig'
 import AuthContext from '../authentication/AuthContext';
 import { Button, Form, Container, Row, Col } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 export const Crear = () => {
     const { isLoggedIn, userEmail } = useContext(AuthContext);
-
+    const navigate = useNavigate();
     const [nombre, setNombre] = useState("");
     const [tipo, setTipo] = useState("");
     const [otroTipo, setOtroTipo] = useState("");
@@ -58,8 +60,10 @@ export const Crear = () => {
             setEdadCantidad("");
             setEdadUnidad("");
             setUsuario(userEmail);
+            Swal.fire("Datos de la mascota creados correctamente");
+            navigate("/mis-publicaciones");
         } else {
-            alert("Por favor inicia sesión para agregar una mascota");
+            Swal.fire("Por favor inicia sesión para agregar una mascota");
         }
     };
 

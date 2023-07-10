@@ -64,10 +64,10 @@ export const Editar = () => {
             });
             // Navegar al inicio
             Swal.fire("Datos actualizados correctamente");
-            navigate("/");
+            navigate("/mis-publicaciones");
 
         } else {
-            alert("Por favor inicia sesión para agregar una mascota");
+            Swal.fire("Por favor inicia sesión para agregar una mascota");
         }
     };
 
